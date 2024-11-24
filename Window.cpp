@@ -30,6 +30,8 @@ void Window::init() {
 		std::cerr << "Failed to initialize GLAD" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 int Window::getScreenWidth() const { return screenWidth; }

@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "Window.h"
-#include <iostream>
 
 int main() {
 	Game game;
@@ -8,8 +6,5 @@ int main() {
 	game.init();
 	game.run();
 	game.end();
-
-	glfwTerminate();
-	return 0;
 }
 

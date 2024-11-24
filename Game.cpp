@@ -11,7 +11,6 @@ void Game::init() {
 	int screenHeight{ 600 };
 	std::string windowName{ "Lighting" };
 
-	//Window window;
 	window.setScreenWidth(screenWidth);
 	window.setScreenHeight(screenHeight);
 	window.setWindowName(windowName);
@@ -27,6 +26,10 @@ void Game::run() {
 	while (!glfwWindowShouldClose(gameWindow))
 	{
 		processInput(gameWindow);
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		glfwSwapBuffers(gameWindow);
 		glfwPollEvents();
 	}
@@ -34,4 +37,5 @@ void Game::run() {
 
 void Game::end() {
 	std::cout << "Game Ended" << std::endl;
+	glfwTerminate();
 }
