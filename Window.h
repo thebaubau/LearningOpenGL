@@ -10,7 +10,7 @@ private:
 	int screenHeight{ 600 };
 	std::string windowName{ "Game" };
 
-	GLFWwindow* window{};
+	GLFWwindow* window;
 
 public:
 	Window() = default;
@@ -27,5 +27,7 @@ public:
 	void setWindow(GLFWwindow* win);
 
 	void init();
+	void update();
+	void end();
 };
 

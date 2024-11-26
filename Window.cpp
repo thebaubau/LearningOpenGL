@@ -34,6 +34,15 @@ void Window::init() {
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Window::update() {
+	glfwPollEvents();
+	glfwSwapBuffers(window);
+}
+
+void Window::end() {
+	std::cout << "End of the road for you, window!" << std::endl;
+}
+
 int Window::getScreenWidth() const { return screenWidth; }
 
 int Window::getScreenHeight() const { return screenHeight; }
