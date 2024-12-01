@@ -3,8 +3,8 @@
 int main() {
 	Game game;
 
-	game.init();
-	game.run();
-	game.end();
+	game.Init();
+	//game.Run();
+	game.End();
 }
 

@@ -6,18 +6,14 @@ class Game {
 
 private:
 	Window window;
-	Renderer renderer;
 
 public:
 	Game() = default;
 	~Game() = default;
 
-	void init();
-	void run();
-	void end();
+	void Init();
+	//void Run();
+	void End();
 
 	Window getWindow() const { return window; }
-	Renderer getRenderer() const { return renderer; }
-
-
 };
