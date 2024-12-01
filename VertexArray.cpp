@@ -2,6 +2,7 @@
 #include <glad\glad.h>
 
 VertexArray::VertexArray() {
+	// Generate and store VAO in ID
 	glGenVertexArrays(1, &m_RendererID);
 }
 
@@ -13,6 +14,7 @@ VertexArray::~VertexArray() {
 void VertexArray::AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& layout) {
 	Bind();
 	vbo.Bind();
+
 	const auto& elements = layout.GetElements();
 	unsigned int offset{ 0 };
 
@@ -22,6 +24,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& l
 		glEnableVertexAttribArray(i);
 		glVertexAttribPointer(i, element.count, element.type,
 			element.normalized, layout.GetStride(), (const void*)offset);
+
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
 }

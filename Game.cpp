@@ -75,7 +75,7 @@ float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 Camera m_Camera;
 Shader m_Shader;
 
-void processInput(GLFWwindow* w);
+void processInput(GLFWwindow* window);
 
 void mouseCallback(GLFWwindow* window, double xposIn, double yposIn);
 
@@ -95,8 +95,14 @@ void Game::Init() {
 	VertexBuffer vbo(cubeVertices, sizeof(cubeVertices));
 
 	VertexBufferLayout layout;
+
+	// First 3 floats from cubeVertices for vertex position
 	layout.Push<float>(3);
+
+	// Next 2 floats for textures
 	layout.Push<float>(2);
+
+	// Binds vao and vbo. Sets up the attribute pointers for the shader
 	vao.AddBuffer(vbo, layout);
 
 	// Done with VAO
@@ -161,9 +167,9 @@ void Game::Init() {
 	// Free memory
 	stbi_image_free(data);
 
-	m_Shader.use();
-	m_Shader.setInt("texture1", 0);
-	m_Shader.setInt("texture2", 1);
+	m_Shader.Bind();
+	m_Shader.SetInt("texture1", 0);
+	m_Shader.SetInt("texture2", 1);
 
 	glfwSetCursorPosCallback(window.getWindow(), mouseCallback);
 	glfwSetScrollCallback(window.getWindow(), scrollCallback);
@@ -171,6 +177,10 @@ void Game::Init() {
 	std::cout << "Game running" << std::endl;
 
 	auto gameWindow = window.getWindow();
+
+	double currentTime;
+	double previousTime;
+
 
 	while (!glfwWindowShouldClose(gameWindow))
 	{
@@ -191,7 +201,7 @@ void Game::Init() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		m_Shader.use();
+		m_Shader.Bind();
 
 		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 		glm::mat4 view = glm::mat4(1.0f);
@@ -201,11 +211,11 @@ void Game::Init() {
 		view = m_Camera.GetViewMatrix();
 		projection = glm::perspective(glm::radians(m_Camera.Zoom), (float)800 / (float)600, 0.1f, 100.0f);
 
-		m_Shader.setMat4("model", model);
-		m_Shader.setMat4("view", view);
-		m_Shader.setMat4("projection", projection);
+		m_Shader.SetMat4("model", model);
+		m_Shader.SetMat4("view", view);
+		m_Shader.SetMat4("projection", projection);
 
-		m_Shader.setFloat("mixValue", 0.2f);
+		m_Shader.SetFloat("mixValue", 0.2f);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -216,7 +226,7 @@ void Game::Init() {
 
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), cubePositions[i]);
 			model = glm::translate(model, glm::vec3(cubePositions[i]));
-			m_Shader.setMat4("model", model);
+			m_Shader.SetMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
@@ -225,6 +235,10 @@ void Game::Init() {
 
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
+
+	vao.Unbind();
+	vbo.Unbind();
+	m_Shader.Unbind();
 }
 
 //void Game::Run() {
