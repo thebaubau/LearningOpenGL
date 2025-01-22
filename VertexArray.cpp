@@ -1,4 +1,5 @@
 #include "VertexArray.h"
+#include "VertexBufferLayout.h"
 #include <glad\glad.h>
 
 VertexArray::VertexArray() {
@@ -18,14 +19,20 @@ void VertexArray::AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& l
 	const auto& elements = layout.GetElements();
 	unsigned int offset{ 0 };
 
+	std::cout << elements.size() << std::endl;
+
 	for (unsigned int i{ 0 }; i < elements.size(); i++) {
 		const auto& element = elements[i];
 
-		glEnableVertexAttribArray(i);
+		std::cout << "Stride:        " << layout.GetStride() << std::endl;
+		std::cout << "Element count: " << element.count << std::endl;
+		std::cout << "Offset:        " << offset << std::endl;
+
 		glVertexAttribPointer(i, element.count, element.type,
 			element.normalized, layout.GetStride(), (const void*)offset);
 
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
+		glEnableVertexAttribArray(i);
 	}
 }
 
@@ -36,5 +43,4 @@ void VertexArray::Bind() const {
 
 void VertexArray::Unbind() const {
 	glBindVertexArray(0);
-
 }

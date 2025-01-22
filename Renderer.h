@@ -1,4 +1,7 @@
 #pragma once
+#include "IndexBuffer.h"
+#include "Shader.h"
+#include "VertexArray.h"
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include <glm/glm.hpp>
@@ -18,8 +21,9 @@ class Renderer {
 private:
 
 public:
-	Renderer();
 	~Renderer() = default;
 
+	void Draw(const VertexArray& va, const Shader& shader) const;
+	void Clear() const;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "Renderer.h"
 #include <glad\glad.h>
 #include <vector>
 
@@ -20,8 +21,7 @@ struct VertexBufferElement {
 	}
 };
 
-class VertexBufferLayout
-{
+class VertexBufferLayout {
 private:
 	std::vector<VertexBufferElement> m_Elements;
 	unsigned int m_Stride;

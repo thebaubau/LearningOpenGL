@@ -2,15 +2,20 @@
 #include "Dependencies\stb_image.h"
 #include "Game.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
-float mixValue{ 1.2f };
+constexpr int SCREEN_WIDTH = 1280;
+constexpr int SCREEN_HEIGHT = 920;
+
+float mixValue{ 0.2f };
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-float lastX = 800 / 2.0f;
-float lastY = 600 / 2.0f;
+float lastX = SCREEN_WIDTH / 2.0f;
+float lastY = SCREEN_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 glm::vec3 cubePositions[] = {
@@ -27,53 +32,52 @@ glm::vec3 cubePositions[] = {
 };
 
 float cubeVertices[] = {
--0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
- 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
--0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
--0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
 float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-Camera m_Camera;
-Shader m_Shader;
+Camera m_Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 void processInput(GLFWwindow* window);
 
@@ -82,14 +86,17 @@ void mouseCallback(GLFWwindow* window, double xposIn, double yposIn);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 void Game::Init() {
-	window.setScreenWidth(1280);
-	window.setScreenHeight(920);
-	window.setWindowName("Lighting");
+	window.setScreenWidth(SCREEN_WIDTH);
+	window.setScreenHeight(SCREEN_HEIGHT);
+	window.setWindowName("Learning OpenGL");
 
 	window.init();
 
-	m_Camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
-	m_Shader = Shader("VertexShader.glsl", "FragmentShader.glsl");
+	glfwSetCursorPosCallback(window.getWindow(), mouseCallback);
+	glfwSetScrollCallback(window.getWindow(), scrollCallback);
+
+	Shader m_Shader("VertexShader.glsl", "FragmentShader.glsl");
+	Renderer renderer;
 
 	VertexArray vao;
 	VertexBuffer vbo(cubeVertices, sizeof(cubeVertices));
@@ -112,67 +119,12 @@ void Game::Init() {
 	vbo.Unbind();
 
 	// TEXTURE
-	// Generate
-	unsigned int texture1, texture2;
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
-	// Configuration
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	// Set texture wrapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Texture load
-	stbi_set_flip_vertically_on_load(true);
-
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Textures/container.jpg", &width, &height, &nrChannels, 0);
-
-	// Generate texture
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-	}
-
-	stbi_image_free(data);
-
-	glGenTextures(1, &texture2);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	data = stbi_load("Textures/awesomeface.png", &width, &height, &nrChannels, 0);
-
-	// Generate texture
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-	}
-
-	// Free memory
-	stbi_image_free(data);
+	Texture texture1("Textures/container.jpg");
+	Texture texture2("Textures/awesomeface.png");
 
 	m_Shader.Bind();
 	m_Shader.SetInt("texture1", 0);
 	m_Shader.SetInt("texture2", 1);
-
-	glfwSetCursorPosCallback(window.getWindow(), mouseCallback);
-	glfwSetScrollCallback(window.getWindow(), scrollCallback);
 
 	std::cout << "Game running" << std::endl;
 
@@ -181,6 +133,10 @@ void Game::Init() {
 	double currentTime;
 	double previousTime;
 
+	texture1.Bind(0);
+	texture2.Bind(1);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	while (!glfwWindowShouldClose(gameWindow))
 	{
@@ -191,15 +147,11 @@ void Game::Init() {
 		processInput(gameWindow);
 
 		window.update();
-		//renderer.update();
 
+		// Background
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
+		renderer.Clear();
 
 		m_Shader.Bind();
 
@@ -209,15 +161,15 @@ void Game::Init() {
 
 		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		view = m_Camera.GetViewMatrix();
-		projection = glm::perspective(glm::radians(m_Camera.Zoom), (float)800 / (float)600, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(m_Camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 		m_Shader.SetMat4("model", model);
 		m_Shader.SetMat4("view", view);
 		m_Shader.SetMat4("projection", projection);
+		m_Shader.SetFloat("mixValue", mixValue);
 
-		m_Shader.SetFloat("mixValue", 0.2f);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		renderer.Draw(vao, m_Shader);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -226,12 +178,11 @@ void Game::Init() {
 
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), cubePositions[i]);
 			model = glm::translate(model, glm::vec3(cubePositions[i]));
-			m_Shader.SetMat4("model", model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
 
-		// Bind previously defined VAO
-		vao.Bind();
+			m_Shader.SetMat4("model", model);
+
+			renderer.Draw(vao, m_Shader);
+		}
 
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
@@ -240,10 +191,6 @@ void Game::Init() {
 	vbo.Unbind();
 	m_Shader.Unbind();
 }
-
-//void Game::Run() {
-//
-//}
 
 void Game::End() {
 	std::cout << "Game Ended" << std::endl;
@@ -256,14 +203,14 @@ void processInput(GLFWwindow* window) {
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		mixValue += 0.001f;
+		mixValue += 0.005f;
 		if (mixValue > 1.0f)
 			mixValue = 1.0f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		mixValue -= 0.001f;
+		mixValue -= 0.005f;
 		if (mixValue < 0.0f)
 			mixValue = 0.0f;
 	}
