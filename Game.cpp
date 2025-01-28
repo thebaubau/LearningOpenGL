@@ -22,6 +22,7 @@ float lastY = SCREEN_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f, 0.2f, 0.5f),
 	glm::vec3(0.0f,  0.0f,  0.0f),
 	glm::vec3(2.0f,  5.0f, -15.0f),
 	glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -80,7 +81,7 @@ float cubeVertices[] = {
 
 float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-Camera m_Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera m_Camera(glm::vec3(0.0f, 0.0f, 5.0f));
 
 void processInput(GLFWwindow* window);
 
@@ -159,11 +160,6 @@ void Game::Init() {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 	while (!glfwWindowShouldClose(gameWindow))
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
@@ -175,10 +171,6 @@ void Game::Init() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
-
 		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
 		{
 			static float f = 0.0f;
@@ -186,29 +178,9 @@ void Game::Init() {
 
 			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-			ImGui::Checkbox("Another Window", &show_another_window);
-
 			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-			ImGui::End();
-		}
-
-		// 3. Show another simple window.
-		if (show_another_window)
-		{
-			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			ImGui::Text("Hello from another window!");
-			if (ImGui::Button("Close Me"))
-				show_another_window = false;
 			ImGui::End();
 		}
 
@@ -223,25 +195,18 @@ void Game::Init() {
 
 		m_Shader.Bind();
 
-		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
 
-		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		view = m_Camera.GetViewMatrix();
 		projection = glm::perspective(glm::radians(m_Camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
-		m_Shader.SetMat4("model", model);
 		m_Shader.SetMat4("view", view);
 		m_Shader.SetMat4("projection", projection);
 		m_Shader.SetFloat("mixValue", mixValue);
 
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-		renderer.Draw(vao, m_Shader);
-
-		for (unsigned int i = 0; i < 10; i++)
-		{
-			float angle = 10 * i;
+		for (unsigned int i = 0; i < 11; i++) {
+			float angle = 10 * (i + 1);
 			glm::mat4 model = glm::mat4(1.0f);
 
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), cubePositions[i]);
