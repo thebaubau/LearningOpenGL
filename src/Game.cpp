@@ -79,8 +79,6 @@ float cubeVertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
-float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-
 Camera m_Camera(glm::vec3(0.0f, 0.0f, 5.0f));
 
 void processInput(GLFWwindow* window);
@@ -117,7 +115,7 @@ void Game::Init() {
 #endif
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	Shader m_Shader("VertexShader.glsl", "FragmentShader.glsl");
+	Shader m_Shader("res\\Shaders\\VertexShader.glsl", "res\\Shaders\\FragmentShader.glsl");
 	Renderer renderer;
 
 	VertexArray vao;
@@ -141,8 +139,8 @@ void Game::Init() {
 	vbo.Unbind();
 
 	// TEXTURE
-	Texture texture1("Textures/container.jpg");
-	Texture texture2("Textures/awesomeface.png");
+	Texture texture1("res\\Textures\\container.jpg");
+	Texture texture2("res\\Textures\\awesomeface.png");
 
 	m_Shader.Bind();
 	m_Shader.SetInt("texture1", 0);
