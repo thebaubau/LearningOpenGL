@@ -11,8 +11,7 @@ public:
 	Game() = default;
 	~Game() = default;
 
-	void Init();
-	//void Run();
+	void Run();
 	void End();
 
 	Window getWindow() const { return window; }

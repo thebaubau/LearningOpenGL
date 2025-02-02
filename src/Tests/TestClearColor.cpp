@@ -1,5 +1,6 @@
 
 
+#include "imgui.h"
 #include "Renderer.h"
 #include "TestClearColor.h"
 
@@ -22,7 +23,7 @@ namespace Test {
 	}
 
 	void TestClearColor::OnImGuiRender() {
-		//ImGui::Color
+		ImGui::ColorPicker4("Clear Color", m_ClearColor);
 	}
 
 }

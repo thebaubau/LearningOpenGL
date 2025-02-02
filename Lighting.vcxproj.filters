@@ -90,6 +90,12 @@
     <ClCompile Include="src\Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Dependency Files\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tests\Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\Test3DCubes.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -157,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="src\Dependencies\ImGui\imstb_truetype.h">
       <Filter>Dependency Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tests\Test3DCubes.h">
+      <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

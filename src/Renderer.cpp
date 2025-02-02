@@ -18,6 +18,7 @@ bool GLLogCall(const char* function, const char* file, int line)
 // TODO: Add const IndexBuffer& ib later
 void Renderer::Draw(const VertexArray& va, const Shader& shader) const {
 	va.Bind();
+	shader.Bind();
 	//ib.Bind();
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
