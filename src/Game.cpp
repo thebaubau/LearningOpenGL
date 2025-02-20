@@ -19,8 +19,8 @@ void Game::Run() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -43,16 +43,18 @@ void Game::Run() {
 	currentTest = testMenu;
 
 	testMenu->RegisterTest<Test::TestClearColor>("Clear Color");
-	testMenu->RegisterTest<Test::Test3DCubes>("Textured 3D Cubes");
+	testMenu->RegisterTest<Test::Test3DCubes>("Textured 3D Cubes", gameWindow);
 
 	while (!glfwWindowShouldClose(gameWindow)) {
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
 		if (currentTest) {
-			currentTest->OnCreate(window);
 			currentTest->OnUpdate(0.0f);
 			currentTest->OnRender();
 			ImGui::Begin("Test");
@@ -62,15 +64,14 @@ void Game::Run() {
 				currentTest = testMenu;
 			}
 
-			currentTest->OnImGuiRender();
 			ImGui::End();
+			currentTest->OnImGuiRender();
 		}
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		window.update();
-		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
 
 	delete currentTest;

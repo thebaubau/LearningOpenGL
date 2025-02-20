@@ -10,10 +10,9 @@
 namespace Test {
 	class Test3DCubes : public Test {
 	public:
-		Test3DCubes();
+		Test3DCubes(GLFWwindow* window);
 		~Test3DCubes();
 
-		void OnCreate(Window window) override;
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
@@ -29,7 +28,7 @@ namespace Test {
 		glm::mat4 m_View = glm::mat4(1.0f);
 		glm::mat4 m_Projection = glm::mat4(1.0f);
 		float m_MixValue{ 0.2f };
-		Window m_Window;
+		GLFWwindow* m_Window;
 
 		void ProcessInput(GLFWwindow* window);
 

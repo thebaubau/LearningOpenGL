@@ -67,7 +67,9 @@ namespace Test {
 	float lastY = 920 / 2.0f;
 	bool firstMouse = true;
 
-	Test3DCubes::Test3DCubes() {
+	Test3DCubes::Test3DCubes(GLFWwindow* window)
+		: m_Window{ window }
+	{
 		Renderer renderer;
 
 		m_VAO = std::make_unique<VertexArray>();
@@ -101,18 +103,14 @@ namespace Test {
 	Test3DCubes::~Test3DCubes() {
 	}
 
-	void Test3DCubes::OnCreate(Window window) {
-		m_Window = window;
-		glfwSetWindowUserPointer(window.getWindow(), this);
-		glfwSetCursorPosCallback(window.getWindow(), [](GLFWwindow* win, double xpos, double ypos) {
+	void Test3DCubes::OnUpdate(float deltaTime) {
+		glfwSetWindowUserPointer(m_Window, this);
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* win, double xpos, double ypos) {
 			static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win))->MouseCallback(win, xpos, ypos);
 		});
-		glfwSetScrollCallback(window.getWindow(), [](GLFWwindow* win, double xoffset, double yoffset) {
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* win, double xoffset, double yoffset) {
 			static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win))->ScrollCallback(win, xoffset, yoffset);
 		});
-	}
-
-	void Test3DCubes::OnUpdate(float deltaTime) {
 	}
 
 	void Test3DCubes::OnRender() {
@@ -144,7 +142,7 @@ namespace Test {
 			renderer.Draw(*m_VAO, *m_Shader);
 		}
 
-		ProcessInput(m_Window.getWindow());
+		//ProcessInput(m_Window.getWindow());
 	}
 
 	void Test3DCubes::OnImGuiRender() {
