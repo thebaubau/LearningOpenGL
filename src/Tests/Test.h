@@ -23,15 +23,8 @@ namespace Test {
 
 		void OnImGuiRender() override;
 
-		//template<typename T>
-		//void RegisterTest(const std::string& name) {
-		//	std::cout << "Registering Test " << name << std::endl;
-
-		//	m_Tests.push_back(std::make_pair(name, []() {return new T(); }));
-		//}
-
 		template<typename T, typename... Args>
-		void RegisterTest(const std::string& name, Args&&... args) {
+		void RegisterTest(const std::string& name, Args&... args) {
 			std::cout << "Registering Test " << name << std::endl;
 
 			m_Tests.push_back(std::make_pair(name, [&args...]() { return new T(args...); }));

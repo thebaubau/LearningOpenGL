@@ -6,13 +6,15 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 class Shader {
 private:
 	unsigned int ID;
 	std::string m_FilePath;
+	mutable std::unordered_map<std::string, GLint> m_UniformLocationCache;
 
-	unsigned int GetUniformLocation(const std::string& name);
+	unsigned int GetUniformLocation(const std::string& name) const;
 	void CheckCompileErrors(GLuint shader, std::string type);
 
 public:

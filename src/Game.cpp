@@ -64,8 +64,8 @@ void Game::Run() {
 				currentTest = testMenu;
 			}
 
-			ImGui::End();
 			currentTest->OnImGuiRender();
+			ImGui::End();
 		}
 
 		ImGui::Render();

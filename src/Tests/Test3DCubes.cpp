@@ -142,7 +142,7 @@ namespace Test {
 			renderer.Draw(*m_VAO, *m_Shader);
 		}
 
-		//ProcessInput(m_Window.getWindow());
+		ProcessInput(m_Window);
 	}
 
 	void Test3DCubes::OnImGuiRender() {
