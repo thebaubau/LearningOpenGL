@@ -139,7 +139,7 @@ namespace Test {
 
 			m_Shader->SetMat4("model", model);
 
-			renderer.Draw(*m_VAO, *m_Shader);
+			renderer.Draw(*m_VAO, *m_Shader, 36);
 		}
 
 		ProcessInput(m_Window);

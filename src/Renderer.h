@@ -23,7 +23,8 @@ private:
 public:
 	~Renderer() = default;
 
-	void Draw(const VertexArray& va, const Shader& shader) const;
+	void Draw(const VertexArray& va, const Shader& shader, const GLint trisCount) const;
+	void Draw(const VertexArray& va, const Shader& shader, const GLint trisCount, const IndexBuffer& ib) const;
 	void Clear() const;
 };
 

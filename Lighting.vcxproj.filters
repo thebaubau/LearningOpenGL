@@ -96,6 +96,9 @@
     <ClCompile Include="src\Tests\Test3DCubes.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tests\TestLighting.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -165,6 +168,9 @@
       <Filter>Dependency Files\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Tests\Test3DCubes.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tests\TestLighting.h">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>

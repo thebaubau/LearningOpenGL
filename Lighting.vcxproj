@@ -157,6 +157,7 @@
     <ClCompile Include="src\Tests\Test.cpp" />
     <ClCompile Include="src\Tests\Test3DCubes.cpp" />
     <ClCompile Include="src\Tests\TestClearColor.cpp" />
+    <ClCompile Include="src\Tests\TestLighting.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\Tests\Test.h" />
     <ClInclude Include="src\Tests\Test3DCubes.h" />
     <ClInclude Include="src\Tests\TestClearColor.h" />
+    <ClInclude Include="src\Tests\TestLighting.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
