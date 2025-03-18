@@ -14,6 +14,7 @@ namespace Test {
 
 		void OnCreate() override;
 		void OnUpdate(float deltaTime) override;
+
 		void OnRender() override;
 		void OnImGuiRender() override;
 	private:
