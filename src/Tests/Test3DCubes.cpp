@@ -61,6 +61,7 @@ namespace Test {
 		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
+
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 	float lastX = 1280 / 2.0f;
@@ -79,10 +80,10 @@ namespace Test {
 		VertexBufferLayout layout;
 
 		// First 3 floats from cubeVertices for vertex position
-		layout.Push<float>(3);
+		layout.Push<float>(3, 0);
 
 		// Next 2 floats for textures
-		layout.Push<float>(2);
+		layout.Push<float>(2, 0);
 
 		// Binds vao and vbo. Sets up the attribute pointers for the shader
 		m_VAO->AddBuffer(*m_VBO, layout);

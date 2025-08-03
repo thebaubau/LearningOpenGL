@@ -30,9 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="I:\Projects\CPP\OpenGL Dependencies\glad.c">
-      <Filter>Dependency Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="src\Tests\TestLighting.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Projects\CPP\OpenGL Dependencies\glad.c">
+      <Filter>Dependency Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +182,18 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="res\Shaders\VertexShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\LightingFragShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\SimpleFragShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\LightingVertexShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\SimpleVertexShader.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

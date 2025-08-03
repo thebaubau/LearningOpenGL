@@ -17,7 +17,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& l
 	vbo.Bind();
 
 	const auto& elements = layout.GetElements();
-	unsigned int offset{ 0 };
+	unsigned int offset = layout.GetOffset();
 
 	std::cout << elements.size() << std::endl;
 

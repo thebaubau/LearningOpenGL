@@ -72,8 +72,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>I:\Projects\CPP\OpenGL Dependencies\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>I:\Projects\CPP\OpenGL Dependencies\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\Projects\CPP\OpenGL Dependencies\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Projects\CPP\OpenGL Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>I:\Projects\CPP\OpenGL Dependencies\includes;$(IncludePath)</IncludePath>
@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="I:\Projects\CPP\OpenGL Dependencies\glad.c" />
+    <ClCompile Include="E:\Projects\CPP\OpenGL Dependencies\glad.c" />
     <ClCompile Include="src\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="src\Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\Dependencies\ImGui\imgui_draw.cpp" />
@@ -193,6 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\FragmentShader.glsl" />
+    <None Include="res\Shaders\LightingFragShader.glsl" />
+    <None Include="res\Shaders\LightingVertexShader.glsl" />
+    <None Include="res\Shaders\SimpleFragShader.glsl" />
+    <None Include="res\Shaders\SimpleVertexShader.glsl" />
     <None Include="res\Shaders\VertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
