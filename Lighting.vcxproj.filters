@@ -207,5 +207,14 @@
     <Image Include="res\Textures\pepe.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="res\Textures\container2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="res\Textures\container2_specular.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="res\Textures\matrix.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -202,6 +202,9 @@
   <ItemGroup>
     <Image Include="res\Textures\awesomeface.png" />
     <Image Include="res\Textures\container.jpg" />
+    <Image Include="res\Textures\container2.png" />
+    <Image Include="res\Textures\container2_specular.png" />
+    <Image Include="res\Textures\matrix.jpg" />
     <Image Include="res\Textures\pepe.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

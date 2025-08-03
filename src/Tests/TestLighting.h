@@ -5,6 +5,7 @@
 #include <VertexArray.h>
 #include <VertexBuffer.h>
 #include <VertexBufferLayout.h>
+#include <Texture.h>
 
 namespace Test {
 	class TestLighting : public Test {
@@ -30,10 +31,12 @@ namespace Test {
 		std::unique_ptr<Shader> m_LightSourceShader;
 		std::unique_ptr<Shader> m_LightingShader;
 		std::unique_ptr<Camera> m_Camera;
+		std::unique_ptr<Texture> m_DiffuseTexture;
+		std::unique_ptr<Texture> m_SpecularTexture;
+		std::unique_ptr<Texture> m_EmissionTexture;
 
-		static const float cubeVertices[36 * 6];
-		static glm::vec3 cubePositions[2];
-
+		static const float cubeVertices[36 * 8];
+		static glm::vec3 cubePositions[11];
 
 		//static unsigned int indices[6] = {
 		//	0, 1, 3,
