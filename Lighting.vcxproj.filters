@@ -96,7 +96,7 @@
     <ClCompile Include="src\Tests\TestLighting.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Projects\CPP\OpenGL Dependencies\glad.c">
+    <ClCompile Include="H:\Projects\CPP\OpenGL Dependencies\glad.c">
       <Filter>Dependency Files</Filter>
     </ClCompile>
   </ItemGroup>

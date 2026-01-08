@@ -99,19 +99,39 @@ namespace Test {
 
 		m_Texture1->Bind(0);
 		m_Texture2->Bind(1);
+
+		// Store ImGui's callbacks and set ours
+		glfwSetWindowUserPointer(m_Window, this);
+		m_PrevCursorPosCallback = glfwSetCursorPosCallback(m_Window, [](GLFWwindow* win, double xpos, double ypos) {
+			auto* self = static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win));
+			// Call ImGui's callback first
+			if (self->m_PrevCursorPosCallback)
+				self->m_PrevCursorPosCallback(win, xpos, ypos);
+			// Then call ours
+			self->MouseCallback(win, xpos, ypos);
+			});
+
+		m_PrevScrollCallback = glfwSetScrollCallback(m_Window, [](GLFWwindow* win, double xoffset, double yoffset) {
+			auto* self = static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win));
+			// Call ImGui's callback first
+			if (self->m_PrevScrollCallback)
+				self->m_PrevScrollCallback(win, xoffset, yoffset);
+			// Then call ours
+			self->ScrollCallback(win, xoffset, yoffset);
+			});
+
 	}
 
 	Test3DCubes::~Test3DCubes() {
+		// Restore ImGui's callbacks when destroying
+		if (m_PrevCursorPosCallback)
+			glfwSetCursorPosCallback(m_Window, m_PrevCursorPosCallback);
+		if (m_PrevScrollCallback)
+			glfwSetScrollCallback(m_Window, m_PrevScrollCallback);
 	}
 
 	void Test3DCubes::OnUpdate(float deltaTime) {
-		glfwSetWindowUserPointer(m_Window, this);
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* win, double xpos, double ypos) {
-			static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win))->MouseCallback(win, xpos, ypos);
-		});
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* win, double xoffset, double yoffset) {
-			static_cast<Test3DCubes*>(glfwGetWindowUserPointer(win))->ScrollCallback(win, xoffset, yoffset);
-		});
+
 	}
 
 	void Test3DCubes::OnRender() {
@@ -183,6 +203,12 @@ namespace Test {
 	};
 
 	void Test3DCubes::MouseCallback(GLFWwindow* window, double xposIn, double yposIn) {
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse) {
+			firstMouse = true;  // Reset to avoid camera jump
+			return;
+		}
+
 		float xpos = static_cast<float>(xposIn);
 		float ypos = static_cast<float>(yposIn);
 
@@ -203,6 +229,10 @@ namespace Test {
 	};
 
 	void Test3DCubes::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse)
+			return;
+
 		m_Camera->ProcessMouseScroll(static_cast<float>(yoffset));
 	};
 }

@@ -30,6 +30,9 @@ namespace Test {
 		float m_MixValue{ 0.2f };
 		GLFWwindow* m_Window;
 
+		GLFWcursorposfun m_PrevCursorPosCallback = nullptr;
+		GLFWscrollfun m_PrevScrollCallback = nullptr;
+
 		void ProcessInput(GLFWwindow* window);
 
 		void MouseCallback(GLFWwindow* window, double xposIn, double yposIn);

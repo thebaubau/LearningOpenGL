@@ -195,28 +195,34 @@ namespace Test {
 		m_LightingShader->SetVec3("light.diffuse", glm::vec3(0.5f));
 		m_LightingShader->SetVec3("light.specular", glm::vec3(1.0f));
 
+		// Point Light
 		m_LightingShader->SetFloat("light.constant", 1.0f);
 		m_LightingShader->SetFloat("light.linear", 0.09f);
 		m_LightingShader->SetFloat("light.quadratic", 0.032f);
+		//m_LightingShader->SetVec3("light.position", cubePositions[1]);
 
-		m_LightingShader->SetVec3("light.position", cubePositions[1]);
-		m_LightingShader->SetVec3("light.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+		// Directional light
+		//m_LightingShader->SetVec3("light.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
 
+		// Spotlight (flashlight)
+		m_LightingShader->SetVec3("light.position", m_Camera->Position);
+		m_LightingShader->SetVec3("light.direction", m_Camera->Front);
+		m_LightingShader->SetFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+
+		// MVP
 		m_LightingShader->SetVec3("viewPos", m_Camera->Position);
 		m_LightingShader->SetMat4("view", m_View);
 		m_LightingShader->SetMat4("projection", m_Projection);
 
 		for (unsigned int i{ 2 }; i < 11; i++) {
 			model = glm::mat4(1.0f);
-
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(10.0f * i), cubePositions[i]);
-			//model = glm::scale(model, glm::vec3(2.0f));
 			m_LightingShader->SetMat4("model", model);
 			renderer.Draw(*m_VAO_Light, *m_LightingShader, 36);
 		}
-		model = glm::mat4(1.0f);
 
+		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(cubePositions[0]));
 		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(10.0f), cubePositions[0]);
 		//model = glm::scale(model, glm::vec3(2.0f));

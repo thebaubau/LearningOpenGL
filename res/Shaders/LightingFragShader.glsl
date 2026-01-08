@@ -21,6 +21,8 @@ struct Light {
   float constant;
   float linear;
   float quadratic;
+
+  float cutOff;
 };
 
 out vec4 FragColor;
@@ -39,6 +41,7 @@ void main()
     float distance = length(light.position - FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * 
                         distance + light.quadratic * (distance * distance));
+    vec4 color;
 
     // Ambient
 //    float ambientStrength = 2.0;
@@ -63,6 +66,15 @@ void main()
 //    float specPos = pow(max(dot(viewDir, reflectPos), 0.0), material.shininess);
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
     
+    // Spotlight
+    float theta = dot(lightDir, normalize(-light.direction));
+    if (theta > light.cutOff) {
+        
+    }
+    else {
+        color = vec4(light.ambient * vec3(texture(material.diffuse, TexCoords)), 1.0);
+    }
+
     // Emission
     vec3 emission = vec3(0.0);
 
