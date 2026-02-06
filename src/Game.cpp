@@ -5,6 +5,7 @@
 #include <Tests\Test3DCubes.h>
 #include <Tests\TestClearColor.h>
 #include <Tests\TestLighting.h>
+#include <Tests\TestBackpack.h>
 
 constexpr int SCREEN_WIDTH = 1280;
 constexpr int SCREEN_HEIGHT = 920;
@@ -46,8 +47,18 @@ void Game::Run() {
 	testMenu->RegisterTest<Test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<Test::Test3DCubes>("Textured 3D Cubes", gameWindow);
 	testMenu->RegisterTest<Test::TestLighting>("Lighting", gameWindow);
+	testMenu->RegisterTest<Test::TestBackpack>("Backpack", gameWindow);
+
+	Renderer renderer;
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 
 	while (!glfwWindowShouldClose(gameWindow)) {
+
+		float currentFrame = static_cast<float>(glfwGetTime());
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -57,8 +68,8 @@ void Game::Run() {
 		ImGui::NewFrame();
 
 		if (currentTest) {
-			currentTest->OnUpdate(0.0f);
-			currentTest->OnRender();
+			currentTest->OnUpdate(deltaTime);
+			currentTest->OnRender(renderer);
 			ImGui::Begin("Test");
 
 			if (currentTest != testMenu && ImGui::Button("<-")) {

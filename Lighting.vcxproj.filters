@@ -28,6 +28,9 @@
     <Filter Include="Tests">
       <UniqueIdentifier>{3d70ef5d-6839-4453-884d-2ff5dad9a6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\Backpack">
+      <UniqueIdentifier>{8b01ec36-eb91-4ade-adeb-da0ce72f16ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -98,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="H:\Projects\CPP\OpenGL Dependencies\glad.c">
       <Filter>Dependency Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\TestBackpack.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +188,15 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tests\TestBackpack.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\FragmentShader.glsl">
@@ -196,6 +217,14 @@
     <None Include="res\Shaders\SimpleVertexShader.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="res\Shaders\FragmentBackpack.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="glsl res\Shaders\FragmentBackpack.glsl" />
+    <None Include="res\Shaders\VertexBackpack.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="glsl res\Shaders\VertexBackpack.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Textures\awesomeface.png">
@@ -215,6 +244,21 @@
     </Image>
     <Image Include="res\Textures\matrix.jpg">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="res\Textures\backpack\diffuse.jpg">
+      <Filter>Resource Files\Textures\Backpack</Filter>
+    </Image>
+    <Image Include="res\Textures\backpack\normal.png">
+      <Filter>Resource Files\Textures\Backpack</Filter>
+    </Image>
+    <Image Include="res\Textures\backpack\roughness.jpg">
+      <Filter>Resource Files\Textures\Backpack</Filter>
+    </Image>
+    <Image Include="res\Textures\backpack\specular.jpg">
+      <Filter>Resource Files\Textures\Backpack</Filter>
+    </Image>
+    <Image Include="res\Textures\backpack\ao.jpg">
+      <Filter>Resource Files\Textures\Backpack</Filter>
     </Image>
   </ItemGroup>
 </Project>

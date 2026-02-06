@@ -62,12 +62,7 @@ namespace Test {
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	float deltaTime = 0.0f;	// Time between current frame and last frame
-	float lastFrame = 0.0f; // Time of last frame
-	float lastX = 1280 / 2.0f;
-	float lastY = 920 / 2.0f;
-	bool firstMouse = true;
-
+	
 	Test3DCubes::Test3DCubes(GLFWwindow* window)
 		: m_Window{ window }
 	{
@@ -87,10 +82,10 @@ namespace Test {
 
 		// Binds vao and vbo. Sets up the attribute pointers for the shader
 		m_VAO->AddBuffer(*m_VBO, layout);
-
+			
 		// TEXTURE
-		m_Texture1 = std::make_unique<Texture>("res\\Textures\\container.jpg");
-		m_Texture2 = std::make_unique<Texture>("res\\Textures\\awesomeface.png");
+		m_Texture1 = std::make_unique<Texture>("res\\Textures\\container.jpg", "diffuse");
+		m_Texture2 = std::make_unique<Texture>("res\\Textures\\awesomeface.png", "diffuse");
 
 		m_Shader = std::make_unique<Shader>("res\\Shaders\\VertexShader.glsl", "res\\Shaders\\FragmentShader.glsl");
 		m_Shader->Bind();
@@ -131,18 +126,16 @@ namespace Test {
 	}
 
 	void Test3DCubes::OnUpdate(float deltaTime) {
-
+		this->deltaTime = deltaTime;
+		ProcessInput(m_Window);
 	}
 
-	void Test3DCubes::OnRender() {
-		float currentFrame = static_cast<float>(glfwGetTime());
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+	void Test3DCubes::OnRender(Renderer& renderer) {
 
 		glClearColor(0.2f, 0.3f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Renderer renderer;
+		//Renderer renderer;
 
 		m_View = m_Camera->GetViewMatrix();
 		m_Projection = glm::perspective(glm::radians(m_Camera->Zoom), (float)1280 / (float)920, 0.1f, 100.0f);
@@ -162,8 +155,6 @@ namespace Test {
 
 			renderer.Draw(*m_VAO, *m_Shader, 36);
 		}
-
-		ProcessInput(m_Window);
 	}
 
 	void Test3DCubes::OnImGuiRender() {

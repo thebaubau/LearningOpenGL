@@ -1,52 +1,51 @@
 #include "TestLighting.h"
-#include <imgui.h>
 
 namespace Test {
 	const float TestLighting::cubeVertices[] = {
-				// positions          // normals           // texture coords
-				-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-				 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-				 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-				 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-				-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-				-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+		// positions          // normals           // texture coords
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-				-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-				 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-				 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-				 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-				-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-				-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 
-				-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-				-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-				-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-				-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-				-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-				-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-				 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-				 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-				 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-				 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-				 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-				 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-				-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-				 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-				 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-				 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-				-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-				-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
-				-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-				 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-				 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-				 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-				-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-				-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 	};
-	glm::vec3 TestLighting::cubePositions[] = {
+	std::array<glm::vec3, 11> TestLighting::cubePositions = {
 		glm::vec3(0.0f, 0.2f, 0.5f),
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -59,6 +58,17 @@ namespace Test {
 		glm::vec3(1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+
+	std::array<glm::vec3, 4> TestLighting::pointLightPositions = {
+		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+		glm::vec3(-4.0f,  2.0f, -12.0f),
+		glm::vec3(0.0f,  0.0f, -3.0f)
+	};
+
+	glm::vec3 ambientColorIntensity = glm::vec3(0.2f);
+	glm::vec3 diffuseColorIntensity = glm::vec3(0.7f);
+	glm::vec3 specularColorIntensity = glm::vec3(1.0f);
 
 	TestLighting::TestLighting(GLFWwindow* window) {
 		m_Window = window;
@@ -74,9 +84,9 @@ namespace Test {
 
 		m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.7f));
 		
-		m_DiffuseTexture = std::make_unique<Texture>("res\\Textures\\container2.png");
-		m_SpecularTexture = std::make_unique<Texture>("res\\Textures\\container2_specular.png");
-		m_EmissionTexture = std::make_unique<Texture>("res\\Textures\\matrix.jpg");
+		m_DiffuseTexture = std::make_unique<Texture>("res\\Textures\\container2.png", "diffuse");
+		m_SpecularTexture = std::make_unique<Texture>("res\\Textures\\container2_specular.png", "specular");
+		m_EmissionTexture = std::make_unique<Texture>("res\\Textures\\matrix.jpg", "diffuse");
 
 		m_LightSourceShader = std::make_unique<Shader>("res\\Shaders\\SimpleVertexShader.glsl", "res\\Shaders\\SimpleFragShader.glsl");
 		m_LightingShader = std::make_unique<Shader>("res\\Shaders\\LightingVertexShader.glsl", "res\\Shaders\\LightingFragShader.glsl");
@@ -106,40 +116,70 @@ namespace Test {
 		m_DiffuseTexture->Bind(0);
 		m_SpecularTexture->Bind(1);
 		m_EmissionTexture->Bind(2);
+
+		// Store ImGui's callbacks and set ours
+		glfwSetWindowUserPointer(m_Window, this);
+		m_PrevCursorPosCallback = glfwSetCursorPosCallback(m_Window, [](GLFWwindow* win, double xpos, double ypos) {
+			auto* self = static_cast<TestLighting*>(glfwGetWindowUserPointer(win));
+			// Call ImGui's callback first
+			if (self->m_PrevCursorPosCallback)
+				self->m_PrevCursorPosCallback(win, xpos, ypos);
+			// Then call ours
+			self->MouseCallback(win, xpos, ypos);
+			});
+
+		m_PrevScrollCallback = glfwSetScrollCallback(m_Window, [](GLFWwindow* win, double xoffset, double yoffset) {
+			auto* self = static_cast<TestLighting*>(glfwGetWindowUserPointer(win));
+			// Call ImGui's callback first
+			if (self->m_PrevScrollCallback)
+				self->m_PrevScrollCallback(win, xoffset, yoffset);
+			// Then call ours
+			self->ScrollCallback(win, xoffset, yoffset);
+			});
+	}
+
+	TestLighting::~TestLighting() {
+		// Restore ImGui's callbacks when destroying
+		if (m_PrevCursorPosCallback)
+			glfwSetCursorPosCallback(m_Window, m_PrevCursorPosCallback);
+		if (m_PrevScrollCallback)
+			glfwSetScrollCallback(m_Window, m_PrevScrollCallback);
 	}
 
 	void TestLighting::OnCreate() {}
 
 	void TestLighting::OnUpdate(float deltaTime) {
-		//glfwSetWindowUserPointer(m_Window, this);
-		//glfwSetCursorPosCallback(m_Window, [](GLFWwindow* win, double xpos, double ypos) {
-		//	static_cast<TestLighting*>(glfwGetWindowUserPointer(win))->MouseCallback(win, xpos, ypos);
-		//});
-		//glfwSetScrollCallback(m_Window, [](GLFWwindow* win, double xoffset, double yoffset) {
-		//	static_cast<TestLighting*>(glfwGetWindowUserPointer(win))->ScrollCallback(win, xoffset, yoffset);
-		//});
-
-		//ProcessInput(m_Window);
+		this->deltaTime = deltaTime;
+		
+		ProcessInput(m_Window);
 	}
 
-	void TestLighting::OnRender() {
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);		
+	void TestLighting::OnRender(Renderer& renderer) {
+		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Renderer renderer;
+		//Renderer renderer;
 
 		// ###################
 		// Light Source Cube #
 		// ###################
 
 		glm::vec3 lightColor;
-		lightColor.x = 0.5f + 0.5f * sin(glfwGetTime() * 2.0f);
-		lightColor.y = 0.5f + 0.5f * sin(glfwGetTime() * 0.7f);
-		lightColor.z = 0.5f + 0.5f * sin(glfwGetTime() * 1.3f);
+		glm::vec3 dirLightColor;
 
-		glm::vec3 ambientColor = lightColor * glm::vec3(0.2f);
-		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-		glm::vec3 specularColor = lightColor * glm::vec3(1.0f);
+		// Disco light colors
+		//lightColor.x = 0.5f + 0.5f * sin(glfwGetTime() * 2.0f);
+		//lightColor.y = 0.5f + 0.5f * sin(glfwGetTime() * 0.7f);
+		//lightColor.z = 0.5f + 0.5f * sin(glfwGetTime() * 1.3f);
+
+		dirLightColor = glm::vec3(0.1f);
+
+		// Normal white light
+		lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
+		glm::vec3 ambientColor = lightColor * ambientColorIntensity;
+		glm::vec3 diffuseColor = lightColor * diffuseColorIntensity;
+		glm::vec3 specularColor = lightColor * specularColorIntensity;
 
 		m_View = m_Camera->GetViewMatrix();
 		m_Projection = glm::perspective(glm::radians(m_Camera->Zoom), (float)1280 / (float)920, 0.1f, 100.0f);
@@ -155,21 +195,34 @@ namespace Test {
 
 		float radius = 2.0f;
 		float time = glfwGetTime();
-		cubePositions[1].x = cubePositions[0].x + cos(time) * radius;
-		cubePositions[1].z = cubePositions[0].z + sin(time) * radius;
-		cubePositions[1].y = sin(time / 1.0f) * 0.5f;
 
-		model = glm::translate(model, cubePositions[1]);
-		model = glm::scale(model, glm::vec3(0.2f));
+		for (unsigned int i{ 0 }; i < pointLightPositions.size(); i++) {
+			pointLightPositions[i].x = cubePositions[i].x + cos(time * 0.5f + i) * radius;
+			pointLightPositions[i].z = cubePositions[i].z + sin(time * 0.5f + i) * radius;
+			pointLightPositions[i].y = sin(time / 1.0f + i);
+
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f));
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(5.0f), pointLightPositions[i]);
+			m_LightSourceShader->SetMat4("model", model);
+
+			renderer.Draw(*m_VAO, *m_LightSourceShader, 36);
+		}
+
+		//cubePositions[1].x = cubePositions[0].x + cos(time * 0.2f) * radius;
+		//cubePositions[1].z = cubePositions[0].z + sin(time * 0.2f) * radius;
+		//cubePositions[1].y = sin(time / 1.0f);
+
+		//model = glm::translate(model, cubePositions[1]);
+		//model = glm::scale(model, glm::vec3(0.2f));
 		//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(5.0f), cubePositions[1]);
 
-		m_LightSourceShader->SetMat4("model", model);
-
-		//renderer.Draw(*m_VAO, *m_LightSourceShader, 36);
 
 		// ###################
 		// Light Source Cube #
 		// ###################
+
 
 		// ##############
 		// Texture Cube #
@@ -177,7 +230,7 @@ namespace Test {
 
 		m_LightingShader->Bind();
 
-		// Use these when no texture
+		// Use these when no texture is assigned
 		//m_LightingShader->SetVec3("objectColor", 1.0f, 0.5f, 0.31f);
 		//m_LightingShader->SetVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 		//m_LightingShader->SetVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
@@ -185,53 +238,56 @@ namespace Test {
 
 		m_LightingShader->SetFloat("material.shininess", 64.0f);
 
-		// Use these for disco lights
-		//m_LightingShader->SetVec3("light.ambient", ambientColor);
-		//m_LightingShader->SetVec3("light.diffuse", diffuseColor);
-		//m_LightingShader->SetVec3("light.specular", specularColor);
+		for (int i{ 0 }; i < pointLightPositions.size(); i++) {
+			// Point lights
+			std::string number = std::to_string(i);
+			m_LightingShader->SetVec3("pointLights[" + number + "].position", pointLightPositions[i]);
 
-		// Use these for normal directional light
-		m_LightingShader->SetVec3("light.ambient", glm::vec3(0.2f));
-		m_LightingShader->SetVec3("light.diffuse", glm::vec3(0.5f));
-		m_LightingShader->SetVec3("light.specular", glm::vec3(1.0f));
+			m_LightingShader->SetVec3("pointLights[" + number + "].ambient", ambientColor);
+			m_LightingShader->SetVec3("pointLights[" + number + "].diffuse", diffuseColor);
+			m_LightingShader->SetVec3("pointLights[" + number + "].specular", specularColor);
 
-		// Point Light
-		m_LightingShader->SetFloat("light.constant", 1.0f);
-		m_LightingShader->SetFloat("light.linear", 0.09f);
-		m_LightingShader->SetFloat("light.quadratic", 0.032f);
-		//m_LightingShader->SetVec3("light.position", cubePositions[1]);
+			m_LightingShader->SetFloat("pointLights[" + number + "].constant", 1.0f);
+			m_LightingShader->SetFloat("pointLights[" + number + "].linear", 0.09f);
+			m_LightingShader->SetFloat("pointLights[" + number + "].quadratic", 0.032f);
+		}
 
-		// Directional light
-		//m_LightingShader->SetVec3("light.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+		// Directional Light
+		m_LightingShader->SetVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+		m_LightingShader->SetVec3("dirLight.ambient", dirLightColor);
+		m_LightingShader->SetVec3("dirLight.diffuse", dirLightColor);
+		m_LightingShader->SetVec3("dirLight.specular", dirLightColor);
 
 		// Spotlight (flashlight)
-		m_LightingShader->SetVec3("light.position", m_Camera->Position);
-		m_LightingShader->SetVec3("light.direction", m_Camera->Front);
-		m_LightingShader->SetFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+		m_LightingShader->SetVec3("spotLight.position", m_Camera->Position);
+		m_LightingShader->SetVec3("spotLight.direction", m_Camera->Front);
+		m_LightingShader->SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		m_LightingShader->SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		m_LightingShader->SetVec3("spotLight.ambient", ambientColor);
+		m_LightingShader->SetVec3("spotLight.diffuse", diffuseColor);\
+		m_LightingShader->SetVec3("spotLight.specular", specularColor);
+		m_LightingShader->SetFloat("spotLight.constant", 1.0f);
+		m_LightingShader->SetFloat("spotLight.linear", 0.09f);
+		m_LightingShader->SetFloat("spotLight.quadratic", 0.032f);
 
 		// MVP
 		m_LightingShader->SetVec3("viewPos", m_Camera->Position);
 		m_LightingShader->SetMat4("view", m_View);
 		m_LightingShader->SetMat4("projection", m_Projection);
 
-		for (unsigned int i{ 2 }; i < 11; i++) {
+		for (unsigned int i = 0; i < cubePositions.size(); i++) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(10.0f * i), cubePositions[i]);
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(10.0f * (i + 1)), cubePositions[i]);
+			
+			// Calculate normal matrix for correct lighting on the CPU side
+			glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+
 			m_LightingShader->SetMat4("model", model);
+			m_LightingShader->SetMat3("normalMatrix", normalMatrix);
+			
 			renderer.Draw(*m_VAO_Light, *m_LightingShader, 36);
 		}
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(cubePositions[0]));
-		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(10.0f), cubePositions[0]);
-		//model = glm::scale(model, glm::vec3(2.0f));
-		//glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-
-		m_LightingShader->SetMat4("model", model);
-		//m_LightingShader->SetMat3("normalMatrix", normalMatrix);
-		//m_DiffuseTexture->Bind(0);
-		renderer.Draw(*m_VAO_Light, *m_LightingShader, 36);
 
 		// ##############
 		// Texture Cube #
@@ -243,11 +299,14 @@ namespace Test {
 
 		ImGui::DragFloat3("Light Pos", &cubePositions[1][0], 0.1f);
 		ImGui::DragFloat3("Cube Movement", &cubePositions[0][0], 0.1f);
+		ImGui::DragFloat3("Ambient Color", &ambientColorIntensity[0], 0.1f);
+		ImGui::DragFloat3("Diffuse Color", &diffuseColorIntensity[0]);
+		ImGui::DragFloat3("Specular Color", &specularColorIntensity[0]);
 
 		ImGui::End();
 	}
 
-	void TestLighting::ProcessInput(GLFWwindow* window)	{
+	void TestLighting::ProcessInput(GLFWwindow* window) {
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
@@ -266,6 +325,12 @@ namespace Test {
 	}
 
 	void TestLighting::MouseCallback(GLFWwindow* window, double xposIn, double yposIn) {
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse) {
+			firstMouse = true;  // Reset to avoid camera jump
+			return;
+		}
+
 		float xpos = static_cast<float>(xposIn);
 		float ypos = static_cast<float>(yposIn);
 
@@ -286,6 +351,10 @@ namespace Test {
 	}
 
 	void TestLighting::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse)
+			return;
+
 		m_Camera->ProcessMouseScroll(static_cast<float>(yoffset));
 	}
 }

@@ -1,25 +1,24 @@
 #pragma once
 #include "Test.h"
 #include <Camera.h>
+#include <imgui.h>
 #include <glm\glm.hpp>
 #include <VertexArray.h>
 #include <VertexBuffer.h>
 #include <VertexBufferLayout.h>
 #include <Texture.h>
+#include <array>
 
 namespace Test {
 	class TestLighting : public Test {
-
-		int counter = 1;
-
 	public:
 		TestLighting(GLFWwindow* window);
-		~TestLighting() = default;
+		~TestLighting();
 
 		void OnCreate() override;
 		void OnUpdate(float deltaTime) override;
 
-		void OnRender() override;
+		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;
 	private:
 		std::unique_ptr<VertexArray> m_VAO;
@@ -36,7 +35,8 @@ namespace Test {
 		std::unique_ptr<Texture> m_EmissionTexture;
 
 		static const float cubeVertices[36 * 8];
-		static glm::vec3 cubePositions[11];
+		static std::array<glm::vec3, 11> cubePositions;
+		static std::array<glm::vec3, 4> pointLightPositions;
 
 		//static unsigned int indices[6] = {
 		//	0, 1, 3,
@@ -50,13 +50,13 @@ namespace Test {
 		glm::mat4 m_Projection = glm::mat4(1.0f);
 
 		float deltaTime = 0.0f;	// Time between current frame and last frame
-		float lastFrame = 0.0f; // Time of last frame
 		float lastX = 1280 / 2.0f;
 		float lastY = 920 / 2.0f;
 		bool firstMouse = true;
-		float cubeRotation{ 20.0f };
 
 		GLFWwindow* m_Window;
+		GLFWcursorposfun m_PrevCursorPosCallback = nullptr;
+		GLFWscrollfun m_PrevScrollCallback = nullptr;
 
 		void ProcessInput(GLFWwindow* window);
 

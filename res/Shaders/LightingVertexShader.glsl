@@ -18,8 +18,11 @@ void main()
     FragPos = vec3(model * vec4(aPos, 1.0));
     TexCoords = aTexCoords;
 
-    // Do this mormal calculation on the CPU
-    Normal = mat3(transpose(inverse(model))) * aNormal;
+    // Normal calculation on the CPU
+    Normal = normalMatrix * aNormal;
+
+    // Normal calculation on the GPU
+    // Normal = mat3(transpose(inverse(model))) * aNormal;
 
     gl_Position = projection * view * model * vec4(aPos, 1.0f);
 }

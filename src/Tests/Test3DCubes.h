@@ -14,7 +14,7 @@ namespace Test {
 		~Test3DCubes();
 
 		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;
 
 	private:
@@ -27,6 +27,11 @@ namespace Test {
 
 		glm::mat4 m_View = glm::mat4(1.0f);
 		glm::mat4 m_Projection = glm::mat4(1.0f);
+
+		float deltaTime = 0.0f;
+		float lastX = 1280 / 2.0f;
+		float lastY = 920 / 2.0f;
+		bool firstMouse = true;
 		float m_MixValue{ 0.2f };
 		GLFWwindow* m_Window;
 

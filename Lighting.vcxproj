@@ -113,12 +113,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;src\Dependencies;src\Dependencies\ImGui;res;res\Shaders;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Dependencies;src\Dependencies\ImGui;res;res\Shaders</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc145-mtd.lib;assimp-vc145-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,10 +153,13 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Tests\Test.cpp" />
     <ClCompile Include="src\Tests\Test3DCubes.cpp" />
+    <ClCompile Include="src\Tests\TestBackpack.cpp" />
     <ClCompile Include="src\Tests\TestClearColor.cpp" />
     <ClCompile Include="src\Tests\TestLighting.cpp" />
     <ClCompile Include="src\Texture.cpp" />
@@ -179,10 +183,13 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Look.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Tests\Test.h" />
     <ClInclude Include="src\Tests\Test3DCubes.h" />
+    <ClInclude Include="src\Tests\TestBackpack.h" />
     <ClInclude Include="src\Tests\TestClearColor.h" />
     <ClInclude Include="src\Tests\TestLighting.h" />
     <ClInclude Include="src\Texture.h" />
@@ -192,15 +199,24 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="glsl res\Shaders\FragmentBackpack.glsl" />
+    <None Include="glsl res\Shaders\VertexBackpack.glsl" />
+    <None Include="res\Shaders\FragmentBackpack.glsl" />
     <None Include="res\Shaders\FragmentShader.glsl" />
     <None Include="res\Shaders\LightingFragShader.glsl" />
     <None Include="res\Shaders\LightingVertexShader.glsl" />
     <None Include="res\Shaders\SimpleFragShader.glsl" />
     <None Include="res\Shaders\SimpleVertexShader.glsl" />
+    <None Include="res\Shaders\VertexBackpack.glsl" />
     <None Include="res\Shaders\VertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Textures\awesomeface.png" />
+    <Image Include="res\Textures\backpack\ao.jpg" />
+    <Image Include="res\Textures\backpack\diffuse.jpg" />
+    <Image Include="res\Textures\backpack\normal.png" />
+    <Image Include="res\Textures\backpack\roughness.jpg" />
+    <Image Include="res\Textures\backpack\specular.jpg" />
     <Image Include="res\Textures\container.jpg" />
     <Image Include="res\Textures\container2.png" />
     <Image Include="res\Textures\container2_specular.png" />

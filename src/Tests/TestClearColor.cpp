@@ -16,7 +16,7 @@ namespace Test {
 	void TestClearColor::OnUpdate(float deltaTime) {
 	}
 
-	void TestClearColor::OnRender() {
+	void TestClearColor::OnRender(Renderer& renderer) {
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
