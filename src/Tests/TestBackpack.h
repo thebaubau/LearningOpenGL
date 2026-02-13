@@ -26,6 +26,16 @@ namespace Test
 		std::unique_ptr<Camera> m_Camera;
 		std::unique_ptr<Shader> m_Shader;
 
+		static const float vertices[108];
+		std::vector<std::string> faces = {
+			"right.jpg",
+			"left.jpg",
+			"top.jpg",
+			"bottom.jpg",
+			"front.jpg",
+			"back.jpg"
+		};
+
 		float deltaTime = 0.0f;
 		float lastX = 1280 / 2.0f;
 		float lastY = 920 / 2.0f;

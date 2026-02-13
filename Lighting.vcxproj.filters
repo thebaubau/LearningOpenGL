@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\Textures\Backpack">
       <UniqueIdentifier>{8b01ec36-eb91-4ade-adeb-da0ce72f16ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\Skybox">
+      <UniqueIdentifier>{a736b57f-f7fa-4a03-a849-4b8083ae0dfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -109,6 +112,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,6 +203,9 @@
     <ClInclude Include="src\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\SkyBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\FragmentShader.glsl">
@@ -220,11 +229,9 @@
     <None Include="res\Shaders\FragmentBackpack.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="glsl res\Shaders\FragmentBackpack.glsl" />
     <None Include="res\Shaders\VertexBackpack.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="glsl res\Shaders\VertexBackpack.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Textures\awesomeface.png">
@@ -259,6 +266,24 @@
     </Image>
     <Image Include="res\Textures\backpack\ao.jpg">
       <Filter>Resource Files\Textures\Backpack</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\back.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\bottom.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\front.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\left.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\right.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
+    </Image>
+    <Image Include="res\Textures\skybox\top.jpg">
+      <Filter>Resource Files\Textures\Skybox</Filter>
     </Image>
   </ItemGroup>
 </Project>
