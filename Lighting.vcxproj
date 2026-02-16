@@ -208,6 +208,8 @@
     <None Include="res\Shaders\LightingVertexShader.glsl" />
     <None Include="res\Shaders\SimpleFragShader.glsl" />
     <None Include="res\Shaders\SimpleVertexShader.glsl" />
+    <None Include="res\Shaders\SkyboxFragShader.glsl" />
+    <None Include="res\Shaders\SkyboxVertexShader.glsl" />
     <None Include="res\Shaders\VertexBackpack.glsl" />
     <None Include="res\Shaders\VertexShader.glsl" />
   </ItemGroup>

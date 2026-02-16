@@ -2,7 +2,7 @@
 
 
 
-SkyBox::SkyBox(const CubeFaces& faces)
+Cubemap::Cubemap(const CubemapFaces& faces)
 {
     glGenTextures(1, &m_TextureId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureId);
@@ -34,15 +34,15 @@ SkyBox::SkyBox(const CubeFaces& faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
-SkyBox::~SkyBox() {
+Cubemap::~Cubemap() {
     glDeleteTextures(1, &m_TextureId);
 }
 
-void SkyBox::Bind(unsigned int slot) {
+void Cubemap::Bind(unsigned int slot) {
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureId);
 }
 
-void SkyBox::Unbind() {
+void Cubemap::Unbind() {
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }

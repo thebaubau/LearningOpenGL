@@ -3,9 +3,13 @@
 #include "Test.h"
 #include <GLFW/glfw3.h>
 #include "Model.h"
+#include "SkyBox.h"
 #include <imgui.h>
 #include <Camera.h>
 #include <iostream>
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
 namespace Test 
 {
@@ -25,6 +29,11 @@ namespace Test
 		std::unique_ptr<Model> m_Backpack;
 		std::unique_ptr<Camera> m_Camera;
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_SkyboxShader;
+		std::unique_ptr<Cubemap> m_Skybox;
+
+		std::unique_ptr<VertexArray> m_SkyboxVAO;
+		std::unique_ptr<VertexBuffer> m_SkyboxVBO;
 
 		static const float vertices[108];
 		std::vector<std::string> faces = {

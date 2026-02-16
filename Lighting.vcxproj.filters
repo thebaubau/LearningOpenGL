@@ -232,6 +232,12 @@
     <None Include="res\Shaders\VertexBackpack.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="res\Shaders\SkyboxFragShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\SkyboxVertexShader.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Textures\awesomeface.png">

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <glad/glad.h>
 
-struct CubeFaces {
+struct CubemapFaces {
     std::string right;
     std::string left;
     std::string top;
@@ -13,10 +13,10 @@ struct CubeFaces {
     std::string back;
 };
 
-class SkyBox {
+class Cubemap {
 public:
-	SkyBox(const CubeFaces& faces);
-	~SkyBox();
+	Cubemap(const CubemapFaces& faces);
+	~Cubemap();
 
 	void Bind(unsigned int slot = 0);
 	void Unbind();

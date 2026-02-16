@@ -54,6 +54,24 @@ namespace Test {
 		m_Backpack = std::make_unique<Model>("I:\\Projects\\CPP\\OpenGLGame\\res\\Textures\\backpack\\backpack.obj");
 		m_Shader = std::make_unique<Shader>("res\\Shaders\\VertexBackpack.glsl", "res\\Shaders\\FragmentBackpack.glsl");
 
+		m_SkyboxVAO = std::make_unique<VertexArray>();
+		m_SkyboxVBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+
+		VertexBufferLayout layout;
+
+		layout.Push<float>(3, 0);
+
+		m_SkyboxVAO->AddBuffer(*m_SkyboxVBO, layout);
+
+		m_Skybox = std::make_unique<Cubemap>(
+			CubemapFaces{
+				.right = "res/Textures/skybox/right.jpg",
+				.left = "res/Textures/skybox/left.jpg",
+				.top = "res/Textures/skybox/top.jpg",
+				.bottom = "res/Textures/skybox/bottom.jpg",
+				.front = "res/Textures/skybox/front.jpg",
+				.back = "res/Textures/skybox/back.jpg"
+			});;
 
 		m_Camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 7.7f));
 
