@@ -11,6 +11,7 @@ uniform sampler2D specular1;
 uniform sampler2D normal1;
 uniform sampler2D roughness1;
 uniform sampler2D ao1;
+uniform samplerCube skybox;
 
 uniform vec3 viewPos;
 uniform vec3 lightPos;
@@ -44,8 +45,21 @@ void main()
     float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
     vec3 specular = spec * specularMap * lightColor;
     
+    // Adding cubemap reflection
+    // vec3 I = normalize(FragPos - viewPos);
+    // vec3 R = reflect(I, norm);
+    // vec4 skyboxReflection = vec4(texture(skybox, R).rgba) * vec4(specularMap, 1.0);
+
+    // Adding cubemap refraction
+    float ratio = 1.00 / 1.52;
+    vec3 I = normalize(FragPos - viewPos);
+    vec3 R = refract(I, normalize(Normal), ratio);
+    vec4 skyboxRefraction = vec4(texture(skybox, R).rgb, 1.0);
+
     // Combine all components
-    vec3 result = ambient + diffuse + specular;
-    
-    FragColor = vec4(result, 1.0);
+    // vec4 result = vec4(ambient, 0.0) + vec4(diffuse, 0.0) + vec4(specular, 0.0) + skyboxReflection;
+    // vec4 result = vec4(skyboxReflection, 1.0);
+    vec4 result = vec4(skyboxRefraction);
+
+    FragColor = vec4(result);
 }

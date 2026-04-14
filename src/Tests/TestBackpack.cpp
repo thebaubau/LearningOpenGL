@@ -53,6 +53,7 @@ namespace Test {
 
 		m_Backpack = std::make_unique<Model>("I:\\Projects\\CPP\\OpenGLGame\\res\\Textures\\backpack\\backpack.obj");
 		m_Shader = std::make_unique<Shader>("res\\Shaders\\VertexBackpack.glsl", "res\\Shaders\\FragmentBackpack.glsl");
+		m_SkyboxShader = std::make_unique<Shader>("res\\Shaders\\SkyboxVertexShader.glsl", "res\\Shaders\\SkyboxFragShader.glsl");
 
 		m_SkyboxVAO = std::make_unique<VertexArray>();
 		m_SkyboxVBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
@@ -96,17 +97,28 @@ namespace Test {
 	}
 
 	TestBackpack::~TestBackpack() {
-		// Restore ImGui's callbacks when destroying
-		if (m_PrevCursorPosCallback)
-			glfwSetCursorPosCallback(m_Window, m_PrevCursorPosCallback);
-		if (m_PrevScrollCallback)
-			glfwSetScrollCallback(m_Window, m_PrevScrollCallback);
-	}
+    // Clear window user pointer FIRST to prevent callbacks from accessing dying object
+    glfwSetWindowUserPointer(m_Window, nullptr);
+    
+    // Set callbacks to nullptr to prevent any invocation
+    glfwSetCursorPosCallback(m_Window, nullptr);
+    glfwSetScrollCallback(m_Window, nullptr);
+    
+    // Now safe to restore previous callbacks (won't use 'this' anymore)
+    if (m_PrevCursorPosCallback)
+        glfwSetCursorPosCallback(m_Window, m_PrevCursorPosCallback);
+    if (m_PrevScrollCallback)
+        glfwSetScrollCallback(m_Window, m_PrevScrollCallback);
+}
 
 	void TestBackpack::OnCreate()
 	{
 		
 	}
+
+	//void TestBackpack::ProcessInput(float deltaTime)
+	//{
+	//}
 
 	void TestBackpack::OnUpdate(float deltaTime)
 	{
@@ -119,6 +131,13 @@ namespace Test {
 	{
 		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glm::vec3 lightPos{ 5.0f, 5.0f, 5.9f };
+		//float time = glfwGetTime();
+
+		//lightPos.x = cos(time * 0.5f + 1) * 20.0f;
+		//lightPos.z = sin(time * 0.5f + 2) * 20.0f;
+		//lightPos.y = sin(time / 1.0f + 3);
 
 		m_View = m_Camera->GetViewMatrix();
 		m_Projection = glm::perspective(glm::radians(m_Camera->Zoom), (float)1280 / (float)920, 0.1f, 100.0f);
@@ -138,10 +157,22 @@ namespace Test {
 		m_Shader->SetMat3("normalMatrix", normalMatrix);
 		
 		m_Shader->SetVec3("viewPos", m_Camera->Position);
-		m_Shader->SetVec3("lightPos", glm::vec3(5.0f, 5.0f, 5.0f));
+		m_Shader->SetVec3("lightPos", lightPos);
 		m_Shader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
+		m_Skybox->Bind(m_Backpack->m_LoadedTextures.size());
+		m_Shader->SetInt("skybox", m_Backpack->m_LoadedTextures.size());
+
 		m_Backpack->Draw(*m_Shader);
+
+		glDepthFunc(GL_LEQUAL);
+		m_SkyboxShader->Bind();
+		m_SkyboxShader->SetMat4("view", glm::mat4(glm::mat3(m_Camera->GetViewMatrix())));
+		m_SkyboxShader->SetMat4("projection", m_Projection);
+
+		m_Skybox->Bind();
+		renderer.Draw(*m_SkyboxVAO, *m_SkyboxShader, sizeof(vertices) / (sizeof(float) * 3));
+		glDepthFunc(GL_LESS);
 	}
 
 	void TestBackpack::OnImGuiRender()

@@ -3,7 +3,7 @@
 #include "Test.h"
 #include <GLFW/glfw3.h>
 #include "Model.h"
-#include "SkyBox.h"
+#include "Cubemap.h"
 #include <imgui.h>
 #include <Camera.h>
 #include <iostream>
@@ -20,6 +20,7 @@ namespace Test
 		~TestBackpack();
 
 		void OnCreate() override;
+		//void ProcessInput(float deltaTime) override;
 		void OnUpdate(float deltaTime) override;
 		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;

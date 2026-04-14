@@ -13,6 +13,7 @@ namespace Test {
 		virtual ~Test() {};
 
 		virtual void OnCreate() {};
+		virtual void ProcessInput(float deltaTime) {};
 		virtual void OnUpdate(float deltaTime) {};
 		virtual void OnRender(Renderer& renderer) {};
 		virtual void OnImGuiRender() {};

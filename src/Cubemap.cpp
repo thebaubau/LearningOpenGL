@@ -1,6 +1,4 @@
-#include "SkyBox.h"
-
-
+#include "Cubemap.h"
 
 Cubemap::Cubemap(const CubemapFaces& faces)
 {
@@ -13,6 +11,8 @@ Cubemap::Cubemap(const CubemapFaces& faces)
     };
 
     int width, height, nrChannels;
+
+    stbi_set_flip_vertically_on_load(false);
 
     for (size_t i{ 0 }; i < faceArray.size(); i++) {
         unsigned char* data = stbi_load(faceArray[i].c_str(), &width, &height, &nrChannels, 0);
@@ -32,6 +32,8 @@ Cubemap::Cubemap(const CubemapFaces& faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    stbi_set_flip_vertically_on_load(true);
 }
 
 Cubemap::~Cubemap() {

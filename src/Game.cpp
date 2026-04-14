@@ -6,6 +6,7 @@
 #include <Tests\TestClearColor.h>
 #include <Tests\TestLighting.h>
 #include <Tests\TestBackpack.h>
+#include <Tests\TestGame.h>
 
 constexpr int SCREEN_WIDTH = 1280;
 constexpr int SCREEN_HEIGHT = 920;
@@ -48,10 +49,13 @@ void Game::Run() {
 	testMenu->RegisterTest<Test::Test3DCubes>("Textured 3D Cubes", gameWindow);
 	testMenu->RegisterTest<Test::TestLighting>("Lighting", gameWindow);
 	testMenu->RegisterTest<Test::TestBackpack>("Backpack", gameWindow);
+	testMenu->RegisterTest<Test::TestGame>("Breakout", gameWindow);
 
 	Renderer renderer;
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
+
+	currentTest->OnCreate();
 
 	while (!glfwWindowShouldClose(gameWindow)) {
 
@@ -77,6 +81,7 @@ void Game::Run() {
 				currentTest = testMenu;
 			}
 
+			currentTest->ProcessInput(deltaTime);
 			currentTest->OnImGuiRender();
 			ImGui::End();
 		}
