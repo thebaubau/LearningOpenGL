@@ -6,24 +6,19 @@ namespace Test {
 	{
 		glDisable(GL_DEPTH_TEST);
 		glfwSetWindowUserPointer(m_Window, this);
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* win, int key, int scancode, int action, int mods) {
-			auto* self = static_cast<TestGame*>(glfwGetWindowUserPointer(win));
-			self->KeyCallback(win, key, scancode, action, mods);
+		glfwSetKeyCallback(m_Window, []
+			(GLFWwindow* win, int key, int scancode, int action, int mods) {
+				auto* self = static_cast<TestGame*>(glfwGetWindowUserPointer(win));
+				self->KeyCallback(win, key, scancode, action, mods);
 			});
 
-	}
-
-	TestGame::~TestGame()
-	{
-	}
-
-	void TestGame::OnCreate()
-	{
-		m_Projection = glm::ortho(0.0f, 1280.0f, 820.0f, 0.0f, -1.0f, 1.0f);
 		m_SpriteShader = std::make_unique<Shader>("res\\Shaders\\SpriteVertexShader.glsl", "res\\Shaders\\SpriteFragShader.glsl");
+		std::shared_ptr<Texture> spriteTex = std::make_shared<Texture>("res\\Textures\\awesomeface.png", "diffuse");
 
-
+		m_Sprite = std::make_unique<Sprite>(spriteTex, glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
+
+	TestGame::~TestGame() {}
 
 	void TestGame::ProcessInput(float deltaTime)
 	{
@@ -35,7 +30,8 @@ namespace Test {
 
 	void TestGame::OnRender(Renderer& renderer)
 	{
-
+		m_SpriteShader->Bind();
+		m_Sprite->Draw(*m_SpriteShader);
 	}
 
 	void TestGame::OnImGuiRender()
