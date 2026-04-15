@@ -7,13 +7,6 @@
 #include "VertexBufferLayout.h"
 #include "Shader.h"
 
-struct SpriteData {
-	glm::vec2 Position;
-	glm::vec2 Size;
-	float Rotation;
-	glm::vec3 Color;
-};
-
 class Sprite
 {
 public:
@@ -26,16 +19,10 @@ public:
 
 	~Sprite() {};
 
-	SpriteData spriteData;
-
 	std::shared_ptr<Texture> m_Texture;
-	std::unique_ptr<VertexArray> m_VAO;
-
-	void Draw(class Shader& shader);
-
+	glm::vec2 position;
+	glm::vec2 size;
+	float rotation;
+	glm::vec3 color;
 private:
-	std::unique_ptr<VertexBuffer> m_VBO;
-	std::unique_ptr<IndexBuffer> m_EBO;
-
-	void SetupSprite();
 };

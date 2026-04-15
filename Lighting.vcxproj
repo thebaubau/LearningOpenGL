@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="H:\Projects\CPP\OpenGL Dependencies\glad.c" />
+    <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="src\Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\Dependencies\ImGui\imgui_draw.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="src\Dependencies\ImGui\imgui.h" />
