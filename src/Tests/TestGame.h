@@ -3,6 +3,7 @@
 #include "SpriteRenderer.h"
 #include "Test.h"
 #include "Texture.h"
+#include "GameObject.h"
 
 namespace Test {
 	enum GameState {
@@ -27,7 +28,7 @@ namespace Test {
 
 		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
 		std::unique_ptr<Shader> m_SpriteShader;
-		std::unique_ptr<Sprite> m_Sprite;
+		std::unique_ptr<GameObject> m_Brick;
 
 		//unsigned int Width, Height;
 	private:

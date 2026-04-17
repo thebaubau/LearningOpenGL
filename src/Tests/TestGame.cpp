@@ -4,6 +4,9 @@ namespace Test {
 	TestGame::TestGame(GLFWwindow* window)
 		: m_Window{ window }, state(GAME_ACTIVE), Keys()
 	{
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+
 		glDisable(GL_DEPTH_TEST);
 		glfwSetWindowUserPointer(m_Window, this);
 		glfwSetKeyCallback(m_Window, []
@@ -15,15 +18,19 @@ namespace Test {
 		m_SpriteShader = std::make_unique<Shader>("res\\Shaders\\SpriteVertexShader.glsl", "res\\Shaders\\SpriteFragShader.glsl");
 
 		m_SpriteShader->Bind();
-		m_SpriteShader->SetMat4("projection", glm::ortho(0.0f, 1280.0f, 820.0f, 0.0f, -1.0f, 1.0f));
+		m_SpriteShader->SetMat4("projection", glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f));
 
 		m_SpriteRenderer = std::make_unique<SpriteRenderer>(*m_SpriteShader);
 
 		std::shared_ptr<Texture> spriteTex = std::make_shared<Texture>("res\\Textures\\awesomeface.png", "diffuse");
-		m_Sprite = std::make_unique<Sprite>(spriteTex, glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		m_Brick = std::make_unique<GameObject>(glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), spriteTex);
 	}
 
-	TestGame::~TestGame() {}
+	TestGame::~TestGame() 
+	{
+		glEnable(GL_DEPTH_TEST);
+		glfwSetKeyCallback(m_Window, nullptr);
+	}
 
 	void TestGame::OnCreate()
 	{
@@ -40,7 +47,7 @@ namespace Test {
 	void TestGame::OnRender(Renderer& renderer)
 	{
 		m_SpriteShader->Bind();
-		m_SpriteRenderer->DrawSprite(*m_Sprite);
+		m_SpriteRenderer->DrawSprite(*m_Brick->sprite, m_Brick->position, m_Brick->size, m_Brick->rotation, m_Brick->color);
 	}
 
 	void TestGame::OnImGuiRender()

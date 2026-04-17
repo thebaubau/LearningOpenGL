@@ -1,6 +1,9 @@
 #include "Dependencies\stb_image.h"
 #include "Texture.h"
 
+Texture::Texture()
+	: m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {}
+
 Texture::Texture(const std::string& path, const std::string& type)
 	: m_FilePath(path), m_Type(type), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {
 

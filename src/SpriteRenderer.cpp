@@ -10,21 +10,21 @@ SpriteRenderer::~SpriteRenderer()
 {
 }
 
-void SpriteRenderer::DrawSprite(Sprite& sprite)
+void SpriteRenderer::DrawSprite(Texture& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec3 color)
 {
     glm::mat4 model = glm::mat4(1.0f);
 
-    model = glm::translate(model, glm::vec3(sprite.position, 0.0f));
-    model = glm::translate(model, glm::vec3(0.5f * sprite.size.x, 0.5f * sprite.size.y, 0.0f));
-    model = glm::rotate(model, glm::radians(sprite.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::translate(model, glm::vec3(-0.5f * sprite.size.x, -0.5f * sprite.size.y, 0.0f));
+    model = glm::translate(model, glm::vec3(position, 0.0f));
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+    model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
-    model = glm::scale(model, glm::vec3(sprite.size, 1.0f));
+    model = glm::scale(model, glm::vec3(size, 1.0f));
 
     m_Shader.SetMat4("model", model);
-    m_Shader.SetVec3("spriteColor", sprite.color);
+    m_Shader.SetVec3("spriteColor", color);
 
-    sprite.m_Texture->Bind();
+    texture.Bind();
     m_VAO->Bind();
     Renderer renderer;
     renderer.Draw(*m_VAO, m_Shader, 6);
