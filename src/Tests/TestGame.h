@@ -4,6 +4,8 @@
 #include "Test.h"
 #include "Texture.h"
 #include "GameObject.h"
+#include "GameLevel.h"
+#include "BallObject.h"
 
 namespace Test {
 	enum GameState {
@@ -23,12 +25,22 @@ namespace Test {
 		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;
 
+		std::vector<GameLevel> Levels;
+		unsigned int Level;
+
+		int m_Width, m_Height;
 		GameState state;
 		bool Keys[1024];
 
-		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
+		std::unique_ptr<GameObject> m_Player;
+		std::unique_ptr<BallObject> m_Ball;
+		//std::unique_ptr<GameObject> m_Brick;
+
 		std::unique_ptr<Shader> m_SpriteShader;
-		std::unique_ptr<GameObject> m_Brick;
+		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
+		std::shared_ptr<Texture> m_Face;
+		std::shared_ptr<Texture> m_Background;
+		std::shared_ptr<Texture> m_Paddle;
 
 		//unsigned int Width, Height;
 	private:

@@ -142,6 +142,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BallObject.cpp" />
+    <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\GameLevel.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="H:\Projects\CPP\OpenGL Dependencies\glad.c" />
     <ClCompile Include="src\SpriteRenderer.cpp" />
@@ -175,6 +178,9 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BallObject.h" />
+    <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\GameLevel.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\SpriteRenderer.h" />
     <ClInclude Include="src\Camera.h" />
@@ -240,6 +246,9 @@
     <Image Include="res\Textures\skybox\left.jpg" />
     <Image Include="res\Textures\skybox\right.jpg" />
     <Image Include="res\Textures\skybox\top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\Levels\level01.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
