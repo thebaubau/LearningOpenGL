@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "GameLevel.h"
 #include "BallObject.h"
+#include "Collision.h"
 
 namespace Test {
 	enum GameState {
@@ -24,6 +25,7 @@ namespace Test {
 		void OnUpdate(float deltaTime) override;
 		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;
+		void DoCollisions();
 
 		std::vector<GameLevel> Levels;
 		unsigned int Level;
@@ -34,7 +36,6 @@ namespace Test {
 
 		std::unique_ptr<GameObject> m_Player;
 		std::unique_ptr<BallObject> m_Ball;
-		//std::unique_ptr<GameObject> m_Brick;
 
 		std::unique_ptr<Shader> m_SpriteShader;
 		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
@@ -42,9 +43,12 @@ namespace Test {
 		std::shared_ptr<Texture> m_Background;
 		std::shared_ptr<Texture> m_Paddle;
 
-		//unsigned int Width, Height;
 	private:
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+		void ResetLevel();
+
+		void ResetPlayer();
 
 		GLFWwindow* m_Window;
 	};

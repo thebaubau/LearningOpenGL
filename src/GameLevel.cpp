@@ -15,7 +15,7 @@ void GameLevel::Load(const char* file, unsigned int levelWidth, unsigned int lev
 		while (std::getline(levelStream, line)) {
 			std::istringstream sstream(line);
 			std::vector<unsigned int> row;
-            std::cout << line << std::endl;
+            
 			while (sstream >> tileCode)
                 row.push_back(tileCode);
             if (!row.empty())
@@ -24,7 +24,6 @@ void GameLevel::Load(const char* file, unsigned int levelWidth, unsigned int lev
 		if (tileData.size() > 0) {
 			this->Init(tileData, levelWidth, levelHeight);
 		}
-        std::cout << "Tiledata size: " << tileData.size() << std::endl;
 	}
 
 }
@@ -60,7 +59,6 @@ void GameLevel::Init(std::vector<std::vector<unsigned int>> tileData, unsigned i
     {
         for (unsigned int x = 0; x < width; ++x)
         {
-            std::cout << "Row " << y << " size: " << tileData[y].size() << std::endl;
             // check block type from level data (2D level array)
             if (tileData[y][x] == 1) // solid
             {

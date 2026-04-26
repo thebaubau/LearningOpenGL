@@ -95,6 +95,13 @@ namespace Test {
 	void TestGame::OnUpdate(float deltaTime)
 	{
 		m_Ball->Move(deltaTime, this->m_Width);
+		this->DoCollisions();
+
+		if (m_Ball->position.y >= this->m_Height) // did ball reach bottom edge?
+		{
+			this->ResetLevel();
+			this->ResetPlayer();
+		}
 	}
 
 	void TestGame::OnRender(Renderer& renderer)
@@ -114,6 +121,61 @@ namespace Test {
 	{
 	}
 
+	void TestGame::DoCollisions()
+	{
+		for (GameObject& box : this->Levels[this->Level].Bricks)
+		{
+			if (!box.destroyed)
+			{
+				Collision::Collided collision = Collision::CheckCollision(*m_Ball, box);
+				if (std::get<0>(collision)) // if collision is true
+				{
+					// destroy block if not solid
+					if (!box.isSolid)
+						box.destroyed = true;
+					// collision resolution
+					Collision::Direction dir = std::get<1>(collision);
+					glm::vec2 diff_vector = std::get<2>(collision);
+					if (dir == Collision::Direction::LEFT || dir == Collision::Direction::RIGHT) // horizontal collision
+					{
+						m_Ball->velocity.x = -m_Ball->velocity.x; // reverse horizontal velocity
+						// relocate
+						float penetration = m_Ball->radius - std::abs(diff_vector.x);
+						if (dir == Collision::Direction::LEFT)
+							m_Ball->position.x += penetration; // move ball to right
+						else
+							m_Ball->position.x -= penetration; // move ball to left;
+					}
+					else // vertical collision
+					{
+						m_Ball->velocity.y = -m_Ball->velocity.y; // reverse vertical velocity
+						// relocate
+						float penetration = m_Ball->radius - std::abs(diff_vector.y);
+						if (dir == Collision::Direction::UP)
+							m_Ball->position.y -= penetration; // move ball back up
+						else
+							m_Ball->position.y += penetration; // move ball back down
+					}
+				}
+			}
+		}
+
+		Collision::Collided result = Collision::CheckCollision(*m_Ball, *m_Player);
+		if (!m_Ball->stuck && std::get<0>(result))
+		{
+			// check where it hit the board, and change velocity based on where it hit the board
+			float centerBoard = m_Player->position.x + m_Player->size.x / 2.0f;
+			float distance = (m_Ball->position.x + m_Ball->radius) - centerBoard;
+			float percentage = distance / (m_Player->size.x / 2.0f);
+			// then move accordingly
+			float strength = 2.0f;
+			glm::vec2 oldVelocity = m_Ball->velocity;
+			m_Ball->velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
+			m_Ball->velocity.y = -1.0f * abs(m_Ball->velocity.y);
+			m_Ball->velocity = glm::normalize(m_Ball->velocity) * glm::length(oldVelocity);
+		}
+	}
+
 	void TestGame::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 	{
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -127,5 +189,25 @@ namespace Test {
 			else if (action == GLFW_RELEASE)
 				Keys[key] = false;
 		}
+	}
+
+	void TestGame::ResetLevel()
+	{
+		if (this->Level == 0)
+			this->Levels[0].Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
+		else if (this->Level == 1)
+			this->Levels[1].Load("res\\Levels\\level02.txt", this->m_Width, this->m_Height / 2);
+		else if (this->Level == 2)
+			this->Levels[2].Load("res\\Levels\\level03.txt", this->m_Width, this->m_Height / 2);
+		else if (this->Level == 3)
+			this->Levels[3].Load("res\\Levels\\level04.txt", this->m_Width, this->m_Height / 2);
+	}
+
+	void TestGame::ResetPlayer()
+	{
+		// reset player/ball stats
+		m_Player->size = PLAYER_SIZE;
+		m_Player->position = glm::vec2(this->m_Width / 2.0f - PLAYER_SIZE.x / 2.0f, this->m_Height - PLAYER_SIZE.y - 20);
+		m_Ball->Reset(m_Player->position + glm::vec2(PLAYER_SIZE.x / 2.0f - BALL_RADIUS, -(BALL_RADIUS * 2.0f)), INITIAL_BALL_VELOCITY);
 	}
 }
