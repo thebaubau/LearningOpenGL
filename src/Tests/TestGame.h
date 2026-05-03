@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stb_image.h>
 #include "SpriteRenderer.h"
 #include "Test.h"
 #include "Texture.h"
@@ -7,6 +8,7 @@
 #include "GameLevel.h"
 #include "BallObject.h"
 #include "Collision.h"
+#include "ParticleGenerator.h"
 
 namespace Test {
 	enum GameState {
@@ -38,10 +40,14 @@ namespace Test {
 		std::unique_ptr<BallObject> m_Ball;
 
 		std::unique_ptr<Shader> m_SpriteShader;
+		std::unique_ptr<Shader> m_ParticleShader;
 		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
+		std::unique_ptr<ParticleGenerator> m_Particles;
+
 		std::shared_ptr<Texture> m_Face;
 		std::shared_ptr<Texture> m_Background;
 		std::shared_ptr<Texture> m_Paddle;
+		std::shared_ptr<Texture> m_ParticleTexture;
 
 	private:
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);

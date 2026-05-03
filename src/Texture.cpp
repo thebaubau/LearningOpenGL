@@ -2,7 +2,15 @@
 #include "Texture.h"
 
 Texture::Texture()
-	: m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {}
+	: m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {
+	glGenTextures(1, &m_RendererID);
+	glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
 
 Texture::Texture(const std::string& path, const std::string& type)
 	: m_FilePath(path), m_Type(type), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {
@@ -10,13 +18,13 @@ Texture::Texture(const std::string& path, const std::string& type)
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 0);
 
 	if (m_LocalBuffer) {
 		GLenum format{};
 		GLenum internalFormat{};
-
+		
 		if (m_BPP == 1) {
 			format = GL_RED;
 			internalFormat = GL_RED;

@@ -49,10 +49,13 @@ namespace Test {
 
 	TestBackpack::TestBackpack(GLFWwindow* window)
 	{
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		
 		m_Window = window;
-
 		m_Backpack = std::make_unique<Model>("I:\\Projects\\CPP\\OpenGLGame\\res\\Textures\\backpack\\backpack.obj");
 		m_Shader = std::make_unique<Shader>("res\\Shaders\\VertexBackpack.glsl", "res\\Shaders\\FragmentBackpack.glsl");
+		m_OutlineShader = std::make_unique<Shader>("res\\Shaders\\VertexBackpack.glsl", "res\\Shaders\\SingleColorShader.glsl");
 		m_SkyboxShader = std::make_unique<Shader>("res\\Shaders\\SkyboxVertexShader.glsl", "res\\Shaders\\SkyboxFragShader.glsl");
 
 		m_SkyboxVAO = std::make_unique<VertexArray>();
@@ -109,16 +112,14 @@ namespace Test {
         glfwSetCursorPosCallback(m_Window, m_PrevCursorPosCallback);
     if (m_PrevScrollCallback)
         glfwSetScrollCallback(m_Window, m_PrevScrollCallback);
+
+	glDisable(GL_STENCIL_TEST);
 }
 
 	void TestBackpack::OnCreate()
 	{
 		
 	}
-
-	//void TestBackpack::ProcessInput(float deltaTime)
-	//{
-	//}
 
 	void TestBackpack::OnUpdate(float deltaTime)
 	{
@@ -130,7 +131,12 @@ namespace Test {
 	void TestBackpack::OnRender(Renderer& renderer)
 	{
 		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
 
 		glm::vec3 lightPos{ 5.0f, 5.0f, 5.9f };
 		//float time = glfwGetTime();
@@ -165,6 +171,34 @@ namespace Test {
 
 		m_Backpack->Draw(*m_Shader);
 
+		// Outline pass
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Only non-1 bits will be taken into consideration, basically everything that is not the original backpack
+        glStencilMask(0x00); // Do not modify bits during this pass
+        glDisable(GL_DEPTH_TEST); // Ignore depth testing. The scaled object will be drawn over everything (except the actual original backpack)
+
+		m_OutlineShader->Bind();
+
+		float scale = 1.1f;
+
+		m_OutlineShader->SetMat4("view", m_View);
+		m_OutlineShader->SetMat4("projection", m_Projection);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(scale, scale, scale));
+
+		m_OutlineShader->SetMat4("model", model);
+
+		glm::mat3 outlineNormalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
+		m_OutlineShader->SetMat3("normalMatrix", outlineNormalMatrix);
+		m_Backpack->Draw(*m_OutlineShader);
+
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glDisable(GL_STENCIL_TEST);
+		glEnable(GL_DEPTH_TEST);
+
+		glDepthMask(GL_FALSE);
 		glDepthFunc(GL_LEQUAL);
 		m_SkyboxShader->Bind();
 		m_SkyboxShader->SetMat4("view", glm::mat4(glm::mat3(m_Camera->GetViewMatrix())));
@@ -172,6 +206,7 @@ namespace Test {
 
 		m_Skybox->Bind();
 		renderer.Draw(*m_SkyboxVAO, *m_SkyboxShader, sizeof(vertices) / (sizeof(float) * 3));
+		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LESS);
 	}
 

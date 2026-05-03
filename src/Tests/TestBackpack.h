@@ -31,6 +31,7 @@ namespace Test
 		std::unique_ptr<Camera> m_Camera;
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Shader> m_SkyboxShader;
+		std::unique_ptr<Shader> m_OutlineShader;
 		std::unique_ptr<Cubemap> m_Skybox;
 
 		std::unique_ptr<VertexArray> m_SkyboxVAO;

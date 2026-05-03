@@ -1,4 +1,5 @@
 #include "TestGame.h"
+using namespace Collision;
 
 namespace Test {
 	const glm::vec2 PLAYER_SIZE{ 100.0f, 20.0f };
@@ -14,7 +15,6 @@ namespace Test {
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		glfwSetWindowUserPointer(m_Window, this);
 		glfwSetKeyCallback(m_Window, []
 			(GLFWwindow* win, int key, int scancode, int action, int mods) {
@@ -22,16 +22,22 @@ namespace Test {
 				self->KeyCallback(win, key, scancode, action, mods);
 			});
 
-
+		// Shaders
 		m_SpriteShader = std::make_unique<Shader>("res\\Shaders\\SpriteVertexShader.glsl", "res\\Shaders\\SpriteFragShader.glsl");
+		m_ParticleShader = std::make_unique<Shader>("res\\Shaders\\ParticleVertexShader.glsl", "res\\Shaders\\ParticleFragmentShader.glsl");
 
+		// Sprite Renderer
 		m_SpriteShader->Bind();
+
 		m_SpriteShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, (float)m_Height, 0.0f, -1.0f, 1.0f));
 
 		m_SpriteRenderer = std::make_unique<SpriteRenderer>(*m_SpriteShader);
+
+		// Textures
 		m_Face = std::make_shared<Texture>("res\\Textures\\awesomeface.png", "diffuse");
 		m_Background = std::make_shared<Texture>("res\\Textures\\breakout\\background.jpg", "diffuse");
 		m_Paddle = std::make_shared<Texture>("res\\Textures\\breakout\\paddle.png", "diffuse");
+		m_ParticleTexture = std::make_shared<Texture>("res\\Textures\\breakout\\particle.png", "diffuse");
 
 		m_Player = std::make_unique<GameObject>(glm::vec2(this->m_Width / 2 - PLAYER_SIZE.x / 2, this->m_Height - PLAYER_SIZE.y - 20), PLAYER_SIZE, m_Paddle);
 
@@ -40,6 +46,12 @@ namespace Test {
 
 		m_Ball = std::make_unique<BallObject>(ballPos, BALL_RADIUS, m_Face, glm::vec3(1.0f), INITIAL_BALL_VELOCITY);
 
+		m_ParticleShader->Bind();
+		m_ParticleShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, (float)m_Height, 0.0f, -1.0f, 1.0f));
+
+		m_Particles = std::make_unique<ParticleGenerator>(m_ParticleTexture, *m_ParticleShader, 500);
+
+		// Level Setup
 		GameLevel one; one.Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
 		GameLevel two; two.Load("res\\Levels\\level02.txt", this->m_Width, this->m_Height / 2);
 		GameLevel three; three.Load("res\\Levels\\level03.txt", this->m_Width, this->m_Height / 2);
@@ -102,15 +114,22 @@ namespace Test {
 			this->ResetLevel();
 			this->ResetPlayer();
 		}
+
+		m_Particles->Update(deltaTime, *m_Ball, 2, glm::vec2(m_Ball->radius / 2.0f));
 	}
 
 	void TestGame::OnRender(Renderer& renderer)
 	{
 		m_SpriteShader->Bind();
+		//m_ParticleShader->Bind();
 		if (this->state == GAME_ACTIVE)
 		{
 			m_SpriteRenderer->DrawSprite(*m_Background, glm::vec2(0.0f, 0.0f), glm::vec2(this->m_Width, this->m_Height), 0.0f);
+
 			m_Player->Draw(*m_SpriteRenderer);
+			m_Particles->Draw();
+
+			m_SpriteShader->Bind();
 			m_Ball->Draw(*m_SpriteRenderer);
 
 			this->Levels[this->Level].Draw(*m_SpriteRenderer);
