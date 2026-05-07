@@ -5,15 +5,15 @@
 class FrameBuffer
 {
 public:
-	FrameBuffer();
+	FrameBuffer(unsigned int width, unsigned int height);
 	~FrameBuffer();
 
-	unsigned int fbo;
-
-private:
 	void Bind();
 	void Unbind();
-
-	Texture *textureColorbuffer;
+private:
+	unsigned int fboID;
+	unsigned int rboID;
+	unsigned int m_Width, m_Height;
+	Texture *m_TextureColorbuffer;
 };
 

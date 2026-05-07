@@ -7,6 +7,13 @@ namespace Test {
 	const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 	const float BALL_RADIUS = 12.5f;
 
+	const float QUAD_VERTICES[] = {
+		-1, -1, 0, 0,
+		 1, -1, 1, 0,
+		 1,  1, 1, 1,
+		-1,  1, 0, 1
+	};
+
 	TestGame::TestGame(GLFWwindow* window)
 		: m_Window{ window }, state(GAME_ACTIVE), Keys()
 	{
@@ -25,6 +32,7 @@ namespace Test {
 		// Shaders
 		m_SpriteShader = std::make_unique<Shader>("res\\Shaders\\SpriteVertexShader.glsl", "res\\Shaders\\SpriteFragShader.glsl");
 		m_ParticleShader = std::make_unique<Shader>("res\\Shaders\\ParticleVertexShader.glsl", "res\\Shaders\\ParticleFragmentShader.glsl");
+		m_ScreenShader = std::make_unique<Shader>("res\\Shaders\\FrameBufferVertexShader.glsl", "res\\Shaders\\FrameBufferFragShader.glsl");
 
 		// Sprite Renderer
 		m_SpriteShader->Bind();
@@ -39,6 +47,7 @@ namespace Test {
 		m_Paddle = std::make_shared<Texture>("res\\Textures\\breakout\\paddle.png", "diffuse");
 		m_ParticleTexture = std::make_shared<Texture>("res\\Textures\\breakout\\particle.png", "diffuse");
 
+		// GameObjects
 		m_Player = std::make_unique<GameObject>(glm::vec2(this->m_Width / 2 - PLAYER_SIZE.x / 2, this->m_Height - PLAYER_SIZE.y - 20), PLAYER_SIZE, m_Paddle);
 
 		glm::vec2 ballPos = m_Player->position + glm::vec2(PLAYER_SIZE.x / 2.0f - BALL_RADIUS,
@@ -50,6 +59,17 @@ namespace Test {
 		m_ParticleShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, (float)m_Height, 0.0f, -1.0f, 1.0f));
 
 		m_Particles = std::make_unique<ParticleGenerator>(m_ParticleTexture, *m_ParticleShader, 500);
+
+		// Framebuffer Stuff
+		m_ScreenBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height);
+		m_ScreenVAO = std::make_unique<VertexArray>();
+		m_ScreenVBO = std::make_unique<VertexBuffer>(QUAD_VERTICES, sizeof(QUAD_VERTICES));
+
+		VertexBufferLayout layout;
+		layout.Push<float>(2, 0);
+		layout.Push<float>(2, 0);
+
+		m_ScreenVAO->AddBuffer(*m_ScreenVBO, layout);
 
 		// Level Setup
 		GameLevel one; one.Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
@@ -124,6 +144,7 @@ namespace Test {
 		//m_ParticleShader->Bind();
 		if (this->state == GAME_ACTIVE)
 		{
+			m_ScreenBuffer->Bind();
 			m_SpriteRenderer->DrawSprite(*m_Background, glm::vec2(0.0f, 0.0f), glm::vec2(this->m_Width, this->m_Height), 0.0f);
 
 			m_Player->Draw(*m_SpriteRenderer);
@@ -133,6 +154,14 @@ namespace Test {
 			m_Ball->Draw(*m_SpriteRenderer);
 
 			this->Levels[this->Level].Draw(*m_SpriteRenderer);
+			m_ScreenBuffer->Unbind();
+
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			m_ScreenShader->Bind();
+			m_ScreenVAO->Bind();
+			glDisable(GL_DEPTH_TEST);
 		}
 	}
 

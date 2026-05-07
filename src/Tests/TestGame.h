@@ -9,6 +9,7 @@
 #include "BallObject.h"
 #include "Collision.h"
 #include "ParticleGenerator.h"
+#include "FrameBuffer.h"
 
 namespace Test {
 	enum GameState {
@@ -41,6 +42,7 @@ namespace Test {
 
 		std::unique_ptr<Shader> m_SpriteShader;
 		std::unique_ptr<Shader> m_ParticleShader;
+		std::unique_ptr<Shader> m_ScreenShader;
 		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
 		std::unique_ptr<ParticleGenerator> m_Particles;
 
@@ -48,6 +50,10 @@ namespace Test {
 		std::shared_ptr<Texture> m_Background;
 		std::shared_ptr<Texture> m_Paddle;
 		std::shared_ptr<Texture> m_ParticleTexture;
+
+		std::unique_ptr<FrameBuffer> m_ScreenBuffer;
+		std::unique_ptr<VertexArray> m_ScreenVAO;
+		std::unique_ptr<VertexBuffer> m_ScreenVBO;
 
 	private:
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);

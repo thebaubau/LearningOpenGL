@@ -1,27 +1,41 @@
 #include "FrameBuffer.h"
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(unsigned int width, unsigned int height)
+	: m_Width(width), m_Height(height)
 {
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenFramebuffers(1, &fboID);
+	glBindFramebuffer(GL_FRAMEBUFFER, fboID);
 
-	textureColorbuffer = new Texture();
-	textureColorbuffer->Unbind();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer->GetRendererID(), 0);
+	m_TextureColorbuffer = new Texture(m_Width, m_Height);
+	m_TextureColorbuffer->Unbind();
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureColorbuffer->GetRendererID(), 0);
+
+	glGenRenderbuffers(1, &rboID);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboID);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboID);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 FrameBuffer::~FrameBuffer()
 {
-	glDeleteFramebuffers(1, &fbo);
-	delete textureColorbuffer;
+	glDeleteFramebuffers(1, &fboID);
+	glDeleteRenderbuffers(1, &rboID);
+	delete m_TextureColorbuffer;
 }
 
 void FrameBuffer::Bind()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fboID);
 }
 
 void FrameBuffer::Unbind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
