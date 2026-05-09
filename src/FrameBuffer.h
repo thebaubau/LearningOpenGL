@@ -5,11 +5,12 @@
 class FrameBuffer
 {
 public:
-	FrameBuffer(unsigned int width, unsigned int height);
+	FrameBuffer(unsigned int width, unsigned int height, int samples = 1);
 	~FrameBuffer();
 
-	void Bind();
+	void Bind(unsigned int target = GL_FRAMEBUFFER);
 	void Unbind();
+	Texture& GetBufferTexture();
 private:
 	unsigned int fboID;
 	unsigned int rboID;

@@ -64,6 +64,7 @@ void Window::init() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_STENCIL_BITS, 8);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	setWindow(glfwCreateWindow(screenWidth, screenHeight, windowName.c_str(), NULL, NULL));
 
@@ -90,6 +91,7 @@ void Window::init() {
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_MULTISAMPLE);
 
 	int flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);

@@ -52,6 +52,7 @@ namespace Test {
 		std::shared_ptr<Texture> m_ParticleTexture;
 
 		std::unique_ptr<FrameBuffer> m_ScreenBuffer;
+		std::unique_ptr<FrameBuffer> m_MultisampleBuffer;
 		std::unique_ptr<VertexArray> m_ScreenVAO;
 		std::unique_ptr<VertexBuffer> m_ScreenVBO;
 

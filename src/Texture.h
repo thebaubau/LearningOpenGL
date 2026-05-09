@@ -10,7 +10,7 @@ private:
 	int m_Width, m_Height, m_BPP;
 
 public:
-	Texture(int width, int height);
+	Texture(int width, int height, int samples = 1);
 	Texture(const std::string& path, const std::string& type);
 	~Texture();
 

@@ -11,6 +11,8 @@ namespace Test {
 		-1, -1, 0, 0,
 		 1, -1, 1, 0,
 		 1,  1, 1, 1,
+		-1, -1, 0, 0,
+		 1,  1, 1, 1,
 		-1,  1, 0, 1
 	};
 
@@ -60,7 +62,7 @@ namespace Test {
 
 		m_Particles = std::make_unique<ParticleGenerator>(m_ParticleTexture, *m_ParticleShader, 500);
 
-		// Framebuffer Stuff
+		// Framebuffer Postprocessing
 		m_ScreenBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height);
 		m_ScreenVAO = std::make_unique<VertexArray>();
 		m_ScreenVBO = std::make_unique<VertexBuffer>(QUAD_VERTICES, sizeof(QUAD_VERTICES));
@@ -70,6 +72,9 @@ namespace Test {
 		layout.Push<float>(2, 0);
 
 		m_ScreenVAO->AddBuffer(*m_ScreenVBO, layout);
+
+		// Framebufferr multisampling
+		m_MultisampleBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height, 4);
 
 		// Level Setup
 		GameLevel one; one.Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
@@ -144,7 +149,7 @@ namespace Test {
 		//m_ParticleShader->Bind();
 		if (this->state == GAME_ACTIVE)
 		{
-			m_ScreenBuffer->Bind();
+			m_MultisampleBuffer->Bind();
 			m_SpriteRenderer->DrawSprite(*m_Background, glm::vec2(0.0f, 0.0f), glm::vec2(this->m_Width, this->m_Height), 0.0f);
 
 			m_Player->Draw(*m_SpriteRenderer);
@@ -154,14 +159,25 @@ namespace Test {
 			m_Ball->Draw(*m_SpriteRenderer);
 
 			this->Levels[this->Level].Draw(*m_SpriteRenderer);
-			m_ScreenBuffer->Unbind();
+			
+			// Blit the multisample texture
+			m_MultisampleBuffer->Bind(GL_READ_FRAMEBUFFER);
+			m_ScreenBuffer->Bind(GL_DRAW_FRAMEBUFFER);
+			glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
+			m_ScreenBuffer->Unbind();
+			m_MultisampleBuffer->Unbind();
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			glDisable(GL_DEPTH_TEST);
 
 			m_ScreenShader->Bind();
 			m_ScreenVAO->Bind();
-			glDisable(GL_DEPTH_TEST);
+
+			m_ScreenBuffer->GetBufferTexture().Bind(0);
+			m_ScreenShader->SetInt("screenTexture", 0);
+
+			renderer.Draw(*m_ScreenVAO, *m_ScreenShader, 6);
 		}
 	}
 
