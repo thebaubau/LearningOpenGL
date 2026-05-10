@@ -37,6 +37,10 @@ namespace Test {
 		GameState state;
 		bool Keys[1024];
 
+		bool m_Shake = false, m_Chaos = false, m_Confuse = false;
+		float m_ShakeTime = 0.0f;
+		float m_Time = 0.0f;
+
 		std::unique_ptr<GameObject> m_Player;
 		std::unique_ptr<BallObject> m_Ball;
 

@@ -52,5 +52,9 @@ public:
 
 	void SetMat4(const std::string& name, const glm::mat4& mat) const;
 
+	void SetIntArray(const std::string& name, int count, const int* arrayValue) const;
 
+	void SetFloatArray(const std::string& name, int count, const float* arrayValue) const;
+	
+	void SetVec2Array(const std::string& name, int count, const glm::vec2* arrayValue) const;
 };

@@ -121,6 +121,21 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& mat) const {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
+void Shader::SetVec2Array(const std::string& name, int count, const glm::vec2* arrayValue) const
+{
+	glUniform2fv(GetUniformLocation(name), count, (float*)arrayValue);
+}
+
+void Shader::SetIntArray(const std::string& name, int count, const int* arrayValue) const 
+{
+	glUniform1iv(GetUniformLocation(name), count, arrayValue);
+}
+
+void Shader::SetFloatArray(const std::string& name, int count, const float* arrayValue) const
+{
+	glUniform1fv(GetUniformLocation(name), count, arrayValue);
+}
+
 unsigned int Shader::GetUniformLocation(const std::string& name) const {
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];

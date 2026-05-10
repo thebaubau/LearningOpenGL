@@ -6,7 +6,6 @@ namespace Test {
 	const float PLAYER_VELOCITY{ 500.0f };
 	const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 	const float BALL_RADIUS = 12.5f;
-
 	const float QUAD_VERTICES[] = {
 		-1, -1, 0, 0,
 		 1, -1, 1, 0,
@@ -31,16 +30,46 @@ namespace Test {
 				self->KeyCallback(win, key, scancode, action, mods);
 			});
 
+		float offset = 1.0f / 300.0f;
+
+		glm::vec2 offsets[9] = {
+			glm::vec2(-offset,  offset), // top-left
+			glm::vec2(0.0f,    offset),  // top-center
+			glm::vec2(offset,  offset),  // top-right
+			glm::vec2(-offset,  0.0f),   // center-left
+			glm::vec2(0.0f,    0.0f),    // center-center
+			glm::vec2(offset,  0.0f),    // center-right
+			glm::vec2(-offset, -offset), // bottom-left
+			glm::vec2(0.0f,   -offset),  // bottom-center
+			glm::vec2(offset, -offset)   // bottom-right    
+		};
+
+		int edge_kernel[9] = {
+			-1, -1, -1,
+			-1,  8, -1,
+			-1, -1, -1
+		};
+
+		float blur_kernel[9] = {
+			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f,
+			2.0f / 16.0f, 4.0f / 16.0f, 2.0f / 16.0f,
+			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f
+		};
+
 		// Shaders
 		m_SpriteShader = std::make_unique<Shader>("res\\Shaders\\SpriteVertexShader.glsl", "res\\Shaders\\SpriteFragShader.glsl");
 		m_ParticleShader = std::make_unique<Shader>("res\\Shaders\\ParticleVertexShader.glsl", "res\\Shaders\\ParticleFragmentShader.glsl");
 		m_ScreenShader = std::make_unique<Shader>("res\\Shaders\\FrameBufferVertexShader.glsl", "res\\Shaders\\FrameBufferFragShader.glsl");
 
+		m_ScreenShader->Bind();
+		m_ScreenShader->SetVec2Array("offsets", 9, offsets);
+		m_ScreenShader->SetIntArray("edge_kernel", 9, edge_kernel);
+		m_ScreenShader->SetFloatArray("blur_kernel", 9, blur_kernel);
+		m_ScreenShader->Unbind();
+
 		// Sprite Renderer
 		m_SpriteShader->Bind();
-
 		m_SpriteShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, (float)m_Height, 0.0f, -1.0f, 1.0f));
-
 		m_SpriteRenderer = std::make_unique<SpriteRenderer>(*m_SpriteShader);
 
 		// Textures
@@ -66,7 +95,7 @@ namespace Test {
 		m_ScreenBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height);
 		m_ScreenVAO = std::make_unique<VertexArray>();
 		m_ScreenVBO = std::make_unique<VertexBuffer>(QUAD_VERTICES, sizeof(QUAD_VERTICES));
-
+		
 		VertexBufferLayout layout;
 		layout.Push<float>(2, 0);
 		layout.Push<float>(2, 0);
@@ -131,6 +160,7 @@ namespace Test {
 
 	void TestGame::OnUpdate(float deltaTime)
 	{
+		m_Time += deltaTime;
 		m_Ball->Move(deltaTime, this->m_Width);
 		this->DoCollisions();
 
@@ -141,6 +171,13 @@ namespace Test {
 		}
 
 		m_Particles->Update(deltaTime, *m_Ball, 2, glm::vec2(m_Ball->radius / 2.0f));
+
+		if (m_ShakeTime > 0.0f)
+		{
+			m_ShakeTime -= deltaTime;
+			if (m_ShakeTime <= 0.0f)
+				m_Shake = false;
+		}
 	}
 
 	void TestGame::OnRender(Renderer& renderer)
@@ -176,6 +213,10 @@ namespace Test {
 
 			m_ScreenBuffer->GetBufferTexture().Bind(0);
 			m_ScreenShader->SetInt("screenTexture", 0);
+			m_ScreenShader->SetInt("chaos", m_Chaos);
+			m_ScreenShader->SetInt("confuse", m_Confuse);
+			m_ScreenShader->SetInt("shake", m_Shake);
+			m_ScreenShader->SetFloat("time", m_Time);
 
 			renderer.Draw(*m_ScreenVAO, *m_ScreenShader, 6);
 		}
@@ -197,6 +238,11 @@ namespace Test {
 					// destroy block if not solid
 					if (!box.isSolid)
 						box.destroyed = true;
+					//else {
+						m_ShakeTime = 0.05;
+						m_Shake = true;
+					//}
+
 					// collision resolution
 					Collision::Direction dir = std::get<1>(collision);
 					glm::vec2 diff_vector = std::get<2>(collision);
