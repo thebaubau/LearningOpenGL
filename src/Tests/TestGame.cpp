@@ -1,3 +1,4 @@
+#define MINIAUDIO_IMPLEMENTATION
 #include "TestGame.h"
 using namespace Collision;
 
@@ -29,6 +30,13 @@ namespace Test {
 				auto* self = static_cast<TestGame*>(glfwGetWindowUserPointer(win));
 				self->KeyCallback(win, key, scancode, action, mods);
 			});
+
+
+		result = ma_engine_init(NULL, &engine);
+		if (result != MA_SUCCESS)
+			std::cout << "ERROR::AUDIO::Failed to initialize audio engine" << std::endl;
+
+		ma_engine_play_sound(&engine, "res\\Audio\\breakout.mp3", NULL);
 
 		float offset = 1.0f / 300.0f;
 
@@ -77,6 +85,12 @@ namespace Test {
 		m_Background = std::make_shared<Texture>("res\\Textures\\breakout\\background.jpg", "diffuse");
 		m_Paddle = std::make_shared<Texture>("res\\Textures\\breakout\\paddle.png", "diffuse");
 		m_ParticleTexture = std::make_shared<Texture>("res\\Textures\\breakout\\particle.png", "diffuse");
+		m_TexSpeed = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_speed.png", "diffuse");
+		m_TexSticky = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_sticky.png", "diffuse");
+		m_TexPass = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_passthrough.png", "diffuse");
+		m_TexSize = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_increase.png", "diffuse");
+		m_TexConfuse = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_confuse.png", "diffuse");
+		m_TexChaos = std::make_shared<Texture>("res\\Textures\\breakout\\PowerUps\\powerup_chaos.png", "diffuse");
 
 		// GameObjects
 		m_Player = std::make_unique<GameObject>(glm::vec2(this->m_Width / 2 - PLAYER_SIZE.x / 2, this->m_Height - PLAYER_SIZE.y - 20), PLAYER_SIZE, m_Paddle);
@@ -123,6 +137,7 @@ namespace Test {
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		glfwSetKeyCallback(m_Window, nullptr);
+		ma_engine_uninit(&engine);
 	}
 
 	void TestGame::OnCreate()
@@ -172,6 +187,8 @@ namespace Test {
 
 		m_Particles->Update(deltaTime, *m_Ball, 2, glm::vec2(m_Ball->radius / 2.0f));
 
+		this->UpdatePowerUps(deltaTime);
+		
 		if (m_ShakeTime > 0.0f)
 		{
 			m_ShakeTime -= deltaTime;
@@ -196,6 +213,10 @@ namespace Test {
 			m_Ball->Draw(*m_SpriteRenderer);
 
 			this->Levels[this->Level].Draw(*m_SpriteRenderer);
+
+			for (PowerUp& powerUp : this->PowerUps)
+				if (!powerUp.destroyed)
+					powerUp.Draw(*m_SpriteRenderer);
 			
 			// Blit the multisample texture
 			m_MultisampleBuffer->Bind(GL_READ_FRAMEBUFFER);
@@ -236,36 +257,58 @@ namespace Test {
 				if (std::get<0>(collision)) // if collision is true
 				{
 					// destroy block if not solid
-					if (!box.isSolid)
+					if (!box.isSolid) {
 						box.destroyed = true;
-					//else {
+						this->SpawnPowerUps(box);
+						ma_engine_play_sound(&engine, "res\\Audio\\bleep.mp3", NULL);
+					}
+					else {
 						m_ShakeTime = 0.05;
 						m_Shake = true;
-					//}
-
+						ma_engine_play_sound(&engine, "res\\Audio\\solid.wav", NULL);
+					}
+					
 					// collision resolution
 					Collision::Direction dir = std::get<1>(collision);
 					glm::vec2 diff_vector = std::get<2>(collision);
-					if (dir == Collision::Direction::LEFT || dir == Collision::Direction::RIGHT) // horizontal collision
-					{
-						m_Ball->velocity.x = -m_Ball->velocity.x; // reverse horizontal velocity
-						// relocate
-						float penetration = m_Ball->radius - std::abs(diff_vector.x);
-						if (dir == Collision::Direction::LEFT)
-							m_Ball->position.x += penetration; // move ball to right
-						else
-							m_Ball->position.x -= penetration; // move ball to left;
+					if (!(m_Ball->passThrough && !box.isSolid)) {
+						if (dir == Collision::Direction::LEFT || dir == Collision::Direction::RIGHT) // horizontal collision
+						{
+							m_Ball->velocity.x = -m_Ball->velocity.x; // reverse horizontal velocity
+							// relocate
+								float penetration = m_Ball->radius - std::abs(diff_vector.x);
+								if (dir == Collision::Direction::LEFT)
+									m_Ball->position.x += penetration; // move ball to right
+								else
+									m_Ball->position.x -= penetration; // move ball to left;
+						}
+						else // vertical collision
+						{
+							m_Ball->velocity.y = -m_Ball->velocity.y; // reverse vertical velocity
+							// relocate
+							float penetration = m_Ball->radius - std::abs(diff_vector.y);
+							if (dir == Collision::Direction::UP)
+								m_Ball->position.y -= penetration; // move ball back up
+							else
+								m_Ball->position.y += penetration; // move ball back down
+						}
 					}
-					else // vertical collision
-					{
-						m_Ball->velocity.y = -m_Ball->velocity.y; // reverse vertical velocity
-						// relocate
-						float penetration = m_Ball->radius - std::abs(diff_vector.y);
-						if (dir == Collision::Direction::UP)
-							m_Ball->position.y -= penetration; // move ball back up
-						else
-							m_Ball->position.y += penetration; // move ball back down
-					}
+				}
+			}
+		}
+
+		for (PowerUp& powerUp : this->PowerUps)
+		{
+			if (!powerUp.destroyed)
+			{
+				if (powerUp.position.y >= this->m_Height)
+					powerUp.destroyed = true;
+				if (Collision::CheckCollision(*m_Player, powerUp))
+				{	// collided with player, now activate powerup
+					ma_engine_play_sound(&engine, "res\\Audio\\powerup.wav", NULL);
+					ActivatePowerUp(powerUp);
+					powerUp.destroyed = true;
+					powerUp.Activated = true;
 				}
 			}
 		}
@@ -273,6 +316,8 @@ namespace Test {
 		Collision::Collided result = Collision::CheckCollision(*m_Ball, *m_Player);
 		if (!m_Ball->stuck && std::get<0>(result))
 		{
+			ma_engine_play_sound(&engine, "res\\Audio\\bleep.wav", NULL);
+
 			// check where it hit the board, and change velocity based on where it hit the board
 			float centerBoard = m_Player->position.x + m_Player->size.x / 2.0f;
 			float distance = (m_Ball->position.x + m_Ball->radius) - centerBoard;
@@ -283,7 +328,138 @@ namespace Test {
 			m_Ball->velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
 			m_Ball->velocity.y = -1.0f * abs(m_Ball->velocity.y);
 			m_Ball->velocity = glm::normalize(m_Ball->velocity) * glm::length(oldVelocity);
+			m_Ball->stuck = m_Ball->sticky;
 		}
+	}
+
+	bool ShouldSpawn(unsigned int chance)
+	{
+		unsigned int random = rand() % chance;
+		return random == 0;
+	}
+
+	void TestGame::SpawnPowerUps(GameObject& block)
+	{
+		if (ShouldSpawn(75)) // 1 in 75 chance
+			this->PowerUps.push_back(
+				PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block.position, m_TexSpeed
+				));
+		if (ShouldSpawn(75))
+			this->PowerUps.push_back(
+				PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block.position, m_TexSticky
+				));
+		if (ShouldSpawn(75))
+			this->PowerUps.push_back(
+				PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block.position, m_TexPass
+				));
+		if (ShouldSpawn(75))
+			this->PowerUps.push_back(
+				PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4), 0.0f, block.position, m_TexSize
+				));
+		if (ShouldSpawn(15)) // negative powerups should spawn more often
+			this->PowerUps.push_back(
+				PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block.position, m_TexConfuse
+				));
+		if (ShouldSpawn(15))
+			this->PowerUps.push_back(
+				PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block.position, m_TexChaos
+				));
+	}
+	
+	void TestGame::ActivatePowerUp(PowerUp& powerUp)
+	{
+		if (powerUp.Type == "speed")
+		{
+			m_Ball->velocity *= 1.2;
+		}
+		else if (powerUp.Type == "sticky")
+		{
+			m_Ball->sticky = true;
+			m_Player->color = glm::vec3(1.0f, 0.5f, 1.0f);
+		}
+		else if (powerUp.Type == "pass-through")
+		{
+			m_Ball->passThrough = true;
+			m_Ball->color = glm::vec3(1.0f, 0.5f, 0.5f);
+		}
+		else if (powerUp.Type == "pad-size-increase")
+		{
+			m_Player->size.x += 50;
+		}
+		else if (powerUp.Type == "confuse")
+		{
+			if (!m_Chaos)
+				m_Confuse = true; // only activate if chaos wasn't already active
+		}
+		else if (powerUp.Type == "chaos")
+		{
+			if (!m_Confuse)
+				m_Chaos = true;
+		}
+	}
+
+	bool IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type)
+	{
+		for (const PowerUp& powerUp : powerUps)
+		{
+			if (powerUp.Activated)
+				if (powerUp.Type == type)
+					return true;
+		}
+		return false;
+	}
+
+	void TestGame::UpdatePowerUps(float deltaTime)
+	{
+		for (PowerUp& powerUp : this->PowerUps)
+		{
+			powerUp.position += powerUp.velocity * deltaTime;
+			if (powerUp.Activated)
+			{
+				powerUp.Duration -= deltaTime;
+
+				if (powerUp.Duration <= 0.0f)
+				{
+					// remove powerup from list (will later be removed)
+					powerUp.Activated = false;
+					// deactivate effects
+					if (powerUp.Type == "sticky")
+					{
+						if (!IsOtherPowerUpActive(this->PowerUps, "sticky"))
+						{	// only reset if no other PowerUp of type sticky is active
+							m_Ball->sticky = false;
+							m_Player->color = glm::vec3(1.0f);
+						}
+					}
+					else if (powerUp.Type == "pass-through")
+					{
+						if (!IsOtherPowerUpActive(this->PowerUps, "pass-through"))
+						{	// only reset if no other PowerUp of type pass-through is active
+							m_Ball->passThrough = false;
+							m_Ball->color = glm::vec3(1.0f);
+						}
+					}
+					else if (powerUp.Type == "confuse")
+					{
+						if (!IsOtherPowerUpActive(this->PowerUps, "confuse"))
+						{	// only reset if no other PowerUp of type confuse is active
+							m_Confuse = false;
+						}
+					}
+					else if (powerUp.Type == "chaos")
+					{
+						if (!IsOtherPowerUpActive(this->PowerUps, "chaos"))
+						{	// only reset if no other PowerUp of type chaos is active
+							m_Chaos = false;
+						}
+					}
+				}
+			}
+		}
+		this->PowerUps.erase(std::remove_if(this->PowerUps.begin(), this->PowerUps.end(),
+			[](const PowerUp& powerUp) { return powerUp.destroyed && !powerUp.Activated; }
+		), this->PowerUps.end());
+	
 	}
 
 	void TestGame::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)

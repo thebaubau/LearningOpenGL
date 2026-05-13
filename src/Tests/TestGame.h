@@ -1,5 +1,6 @@
 #pragma once
 
+#include "miniaudio.h"
 #include <stb_image.h>
 #include "SpriteRenderer.h"
 #include "Test.h"
@@ -10,6 +11,7 @@
 #include "Collision.h"
 #include "ParticleGenerator.h"
 #include "FrameBuffer.h"
+#include "PowerUp.h"
 
 namespace Test {
 	enum GameState {
@@ -30,12 +32,20 @@ namespace Test {
 		void OnImGuiRender() override;
 		void DoCollisions();
 
+		ma_result result;
+		ma_engine engine;
+
 		std::vector<GameLevel> Levels;
 		unsigned int Level;
 
 		int m_Width, m_Height;
 		GameState state;
 		bool Keys[1024];
+
+		std::vector<PowerUp> PowerUps;
+		void SpawnPowerUps(GameObject& block);
+		void UpdatePowerUps(float deltaTime);
+		void ActivatePowerUp(PowerUp& powerUp);
 
 		bool m_Shake = false, m_Chaos = false, m_Confuse = false;
 		float m_ShakeTime = 0.0f;
@@ -54,6 +64,12 @@ namespace Test {
 		std::shared_ptr<Texture> m_Background;
 		std::shared_ptr<Texture> m_Paddle;
 		std::shared_ptr<Texture> m_ParticleTexture;
+		std::shared_ptr<Texture> m_TexSpeed;
+		std::shared_ptr<Texture> m_TexSticky;
+		std::shared_ptr<Texture> m_TexPass;
+		std::shared_ptr<Texture> m_TexSize;
+		std::shared_ptr<Texture> m_TexConfuse;
+		std::shared_ptr<Texture> m_TexChaos;
 
 		std::unique_ptr<FrameBuffer> m_ScreenBuffer;
 		std::unique_ptr<FrameBuffer> m_MultisampleBuffer;

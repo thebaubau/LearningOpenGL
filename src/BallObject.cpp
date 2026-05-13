@@ -1,10 +1,10 @@
 #include "BallObject.h"
 
 BallObject::BallObject() 
-    : GameObject(), radius(12.5f), stuck(true) {}
+    : GameObject(), radius(12.5f), stuck(true), sticky(false), passThrough(false) {}
 
 BallObject::BallObject(glm::vec2 pos, float radius, std::shared_ptr<Texture> sprite, glm::vec3 color, glm::vec2 velocity)
-    : GameObject(pos, glm::vec2(radius * 2.0f, radius * 2.0f), sprite, color, velocity), radius(radius), stuck(true) {}
+    : GameObject(pos, glm::vec2(radius * 2.0f, radius * 2.0f), sprite, color, velocity), radius(radius), stuck(true), sticky(false), passThrough(false) {}
 
 glm::vec2 BallObject::Move(float deltaTime, unsigned int windowWidth) {
 	if (!this->stuck) {
@@ -34,4 +34,6 @@ void BallObject::Reset(glm::vec2 position, glm::vec2 velocity)
     this->position = position;
     this->velocity = velocity;
     this->stuck = true;
+    this->sticky = false;
+    this->passThrough = false;
 }
