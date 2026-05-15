@@ -18,7 +18,7 @@ bool GLLogCall(const char* function, const char* file, int line)
 void Renderer::Draw(const VertexArray& va, const Shader& shader, const GLint trisCount) const {
 	va.Bind();
 	shader.Bind();
-
+	DrawCallCount += 1;
 	glDrawArrays(GL_TRIANGLES, 0, trisCount);
 }
 
@@ -26,7 +26,7 @@ void Renderer::Draw(const VertexArray& va, const Shader& shader, const GLint tri
 	va.Bind();
 	shader.Bind();
 	ib.Bind();
-
+	DrawCallCount += 1;
 	glDrawArrays(GL_TRIANGLES, 0, trisCount);
 }
 

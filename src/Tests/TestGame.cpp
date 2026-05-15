@@ -119,6 +119,9 @@ namespace Test {
 		// Framebufferr multisampling
 		m_MultisampleBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height, 4);
 
+		// Text
+		m_TextRenderer = std::make_unique<TextRenderer>("res\\Fonts\\Roboto-Regular.ttf");
+
 		// Level Setup
 		GameLevel one; one.Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
 		GameLevel two; two.Load("res\\Levels\\level02.txt", this->m_Width, this->m_Height / 2);
@@ -176,6 +179,7 @@ namespace Test {
 	void TestGame::OnUpdate(float deltaTime)
 	{
 		m_Time += deltaTime;
+		m_DeltaTime = deltaTime;
 		m_Ball->Move(deltaTime, this->m_Width);
 		this->DoCollisions();
 
@@ -199,6 +203,9 @@ namespace Test {
 
 	void TestGame::OnRender(Renderer& renderer)
 	{
+		m_Renderer = &renderer;
+		renderer.DrawCallCount = 0;
+
 		m_SpriteShader->Bind();
 		//m_ParticleShader->Bind();
 		if (this->state == GAME_ACTIVE)
@@ -240,11 +247,16 @@ namespace Test {
 			m_ScreenShader->SetFloat("time", m_Time);
 
 			renderer.Draw(*m_ScreenVAO, *m_ScreenShader, 6);
+
+			m_TextRenderer->RenderText("Why are you gae?", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+			m_TextRenderer->RenderText("DEDEDED", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 		}
 	}
 
 	void TestGame::OnImGuiRender()
 	{
+		ImGui::Text("FPS: %.1f", 1.0f / m_DeltaTime);
+		//ImGui::Text("Draw Calls: %d", m_Renderer->DrawCallCount);
 	}
 
 	void TestGame::DoCollisions()

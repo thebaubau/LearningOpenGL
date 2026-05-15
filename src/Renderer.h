@@ -22,6 +22,7 @@ private:
 
 public:
 	~Renderer() = default;
+	mutable int DrawCallCount = 0;
 
 	void Draw(const VertexArray& va, const Shader& shader, const GLint trisCount) const;
 	void Draw(const VertexArray& va, const Shader& shader, const GLint trisCount, const IndexBuffer& ib) const;

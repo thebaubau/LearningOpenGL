@@ -2,6 +2,7 @@
 
 #include "miniaudio.h"
 #include <stb_image.h>
+#include <imgui.h>
 #include "SpriteRenderer.h"
 #include "Test.h"
 #include "Texture.h"
@@ -12,6 +13,7 @@
 #include "ParticleGenerator.h"
 #include "FrameBuffer.h"
 #include "PowerUp.h"
+#include "TextRenderer.h"
 
 namespace Test {
 	enum GameState {
@@ -41,6 +43,7 @@ namespace Test {
 		int m_Width, m_Height;
 		GameState state;
 		bool Keys[1024];
+		Renderer* m_Renderer = nullptr;
 
 		std::vector<PowerUp> PowerUps;
 		void SpawnPowerUps(GameObject& block);
@@ -50,6 +53,7 @@ namespace Test {
 		bool m_Shake = false, m_Chaos = false, m_Confuse = false;
 		float m_ShakeTime = 0.0f;
 		float m_Time = 0.0f;
+		float m_DeltaTime = 0.0f;
 
 		std::unique_ptr<GameObject> m_Player;
 		std::unique_ptr<BallObject> m_Ball;
@@ -58,6 +62,7 @@ namespace Test {
 		std::unique_ptr<Shader> m_ParticleShader;
 		std::unique_ptr<Shader> m_ScreenShader;
 		std::unique_ptr<SpriteRenderer> m_SpriteRenderer;
+		std::unique_ptr<TextRenderer> m_TextRenderer;
 		std::unique_ptr<ParticleGenerator> m_Particles;
 
 		std::shared_ptr<Texture> m_Face;

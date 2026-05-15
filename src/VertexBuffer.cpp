@@ -1,11 +1,10 @@
 #include "VertexBuffer.h"
-#include <glad\glad.h>
 
 // TODO: Specify draw type
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
+VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum drawType) {
 	glGenBuffers(1, &m_RendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, size, data, drawType);
 }
 
 VertexBuffer::~VertexBuffer() {
