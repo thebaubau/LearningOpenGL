@@ -19,11 +19,12 @@ struct Character {
 class TextRenderer
 {
 public:
-	TextRenderer(const std::string& path);
+	TextRenderer(const std::string& path, int width, int height);
     ~TextRenderer();
 
     void SetupFont(const std::string& path);
     void RenderText(std::string text, float x, float y, float scale, glm::vec3 color);
+    float GetTextWidth(const std::string& text, float scale);
 
     std::map<char, Character> Characters;
 
@@ -32,7 +33,7 @@ public:
     std::unique_ptr<VertexBuffer> m_VBO;
 
 private:
-    unsigned int m_Width = 800;
-    unsigned int m_Height = 600;
+    unsigned int m_Width = 1280;
+    unsigned int m_Height = 920;
 };
 

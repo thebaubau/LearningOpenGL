@@ -1,13 +1,13 @@
 #include "TextRenderer.h"
 
-TextRenderer::TextRenderer(const std::string& path)
+TextRenderer::TextRenderer(const std::string& path, int width, int height)
+    : m_Width(width), m_Height(height)
 {
     SetupFont(path);
 
     m_TextShader = std::make_unique<Shader>("res\\Shaders\\TextVertexShader.glsl", "res\\Shaders\\TextFragShader.glsl");
     m_TextShader->Bind();
-    m_TextShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, 0.0f, (float)m_Height));
-    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+    m_TextShader->SetMat4("projection", glm::ortho(0.0f, (float)m_Width, (float)m_Height, 0.0f));
 
     m_VAO = std::make_unique<VertexArray>();
     m_VBO = std::make_unique<VertexBuffer>(nullptr, sizeof(float) * 6 * 4);
@@ -108,20 +108,19 @@ void TextRenderer::RenderText(std::string text, float x, float y, float scale, g
         Character ch = Characters[*c];
 
         float xpos = x + ch.Bearing.x * scale;
-        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+        float ypos = y + (this->Characters['H'].Bearing.y - ch.Bearing.y) * scale;
 
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
-
         // update VBO for each character
         float vertices[6][4] = {
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos,     ypos + h,   0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 0.0f },
+            { xpos,     ypos,       0.0f, 0.0f },
 
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }
+            { xpos,     ypos + h,   0.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 0.0f }
         };
 
         // render glyph texture over quad
@@ -143,3 +142,12 @@ void TextRenderer::RenderText(std::string text, float x, float y, float scale, g
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+float TextRenderer::GetTextWidth(const std::string& text, float scale)
+{
+    float width = 0.0f;
+    for (auto c = text.begin(); c != text.end(); c++)
+        width += (Characters[*c].Advance >> 6) * scale;
+    return width;
+}
+

@@ -17,7 +17,7 @@ namespace Test {
 	};
 
 	TestGame::TestGame(GLFWwindow* window)
-		: m_Window{ window }, state(GAME_ACTIVE), Keys()
+		: m_Window{ window }, state(GAME_MENU), Keys(), KeysProcessed()
 	{
 		glfwGetFramebufferSize(window, &m_Width, &m_Height);
 
@@ -120,7 +120,7 @@ namespace Test {
 		m_MultisampleBuffer = std::make_unique<FrameBuffer>(m_Width, m_Height, 4);
 
 		// Text
-		m_TextRenderer = std::make_unique<TextRenderer>("res\\Fonts\\Roboto-Regular.ttf");
+		m_TextRenderer = std::make_unique<TextRenderer>("res\\Fonts\\OCRAEXT.ttf", m_Width, m_Height);
 
 		// Level Setup
 		GameLevel one; one.Load("res\\Levels\\level01.txt", this->m_Width, this->m_Height / 2);
@@ -149,6 +149,27 @@ namespace Test {
 
 	void TestGame::ProcessInput(float deltaTime)
 	{
+		if (this->state == GAME_MENU)
+		{
+			if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
+			{
+				this->state = GAME_ACTIVE;
+				this->KeysProcessed[GLFW_KEY_ENTER] = true;
+			}
+			if (this->Keys[GLFW_KEY_W] && !this->KeysProcessed[GLFW_KEY_W])
+			{
+				this->Level = (this->Level + 1) % 4;
+				this->KeysProcessed[GLFW_KEY_W] = true;
+			}
+			if (this->Keys[GLFW_KEY_S] && !this->KeysProcessed[GLFW_KEY_S])
+			{
+				if (this->Level > 0)
+					--this->Level;
+				else
+					this->Level = 3;
+				this->KeysProcessed[GLFW_KEY_S] = true;
+			}
+		}
 		if (this->state == GAME_ACTIVE)
 		{
 			float velocity = PLAYER_VELOCITY * deltaTime;
@@ -185,7 +206,13 @@ namespace Test {
 
 		if (m_Ball->position.y >= this->m_Height) // did ball reach bottom edge?
 		{
-			this->ResetLevel();
+			--this->Lives;
+			// did the player lose all his lives? : Game over
+			if (this->Lives == 0)
+			{
+				this->ResetLevel();
+				this->state = GAME_MENU;
+			}
 			this->ResetPlayer();
 		}
 
@@ -199,6 +226,14 @@ namespace Test {
 			if (m_ShakeTime <= 0.0f)
 				m_Shake = false;
 		}
+
+		if (this->state == GAME_ACTIVE && this->Levels[this->Level].IsCompleted())
+		{
+			this->ResetLevel();
+			this->ResetPlayer();
+			this->m_Chaos = true;
+			this->state = GAME_WIN;
+		}
 	}
 
 	void TestGame::OnRender(Renderer& renderer)
@@ -208,7 +243,7 @@ namespace Test {
 
 		m_SpriteShader->Bind();
 		//m_ParticleShader->Bind();
-		if (this->state == GAME_ACTIVE)
+		if (this->state == GAME_ACTIVE || this->state == GAME_MENU)
 		{
 			m_MultisampleBuffer->Bind();
 			m_SpriteRenderer->DrawSprite(*m_Background, glm::vec2(0.0f, 0.0f), glm::vec2(this->m_Width, this->m_Height), 0.0f);
@@ -248,8 +283,29 @@ namespace Test {
 
 			renderer.Draw(*m_ScreenVAO, *m_ScreenShader, 6);
 
-			m_TextRenderer->RenderText("Why are you gae?", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-			m_TextRenderer->RenderText("DEDEDED", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+			std::stringstream ss; ss << this->Lives;
+			m_TextRenderer->RenderText("Lives:" + ss.str(), 5.0f, 5.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f));
+		}
+		if (this->state == GAME_MENU)
+		{
+			float startMessage = m_TextRenderer->GetTextWidth("Press ENTER to start", 0.7f);
+			m_TextRenderer->RenderText("Press ENTER to start", (m_Width - startMessage) / 2, m_Height / 2 - 20.0f, 0.7f, glm::vec3(0.5, 0.8f, 0.2f));
+
+			float selectionMessasgeSize = m_TextRenderer->GetTextWidth("Press W or S to select level", 0.6f);
+			m_TextRenderer->RenderText("Press W or S to select level", (m_Width - selectionMessasgeSize) / 2, m_Height / 2 + 20.0f, 0.6f, glm::vec3(0.5, 0.8f, 0.2f));
+		}
+
+		if (this->state == GAME_WIN)
+		{
+			float winMessageSize = m_TextRenderer->GetTextWidth("You WON!!!", 1.0f);
+			m_TextRenderer->RenderText(
+				"You WON!!!", (m_Width - winMessageSize) / 2, m_Height / 2 - 20.0, 1.0, glm::vec3(0.0, 1.0, 0.0)
+			);
+
+			float instructionMessageSize = m_TextRenderer->GetTextWidth("Press ENTER to retry or ESC to quit", 1.0f);
+			m_TextRenderer->RenderText(
+				"Press ENTER to retry or ESC to quit", (m_Width - instructionMessageSize) / 2, m_Height / 2 + 20, 1.0f, glm::vec3(1.0, 1.0, 0.0)
+			);
 		}
 	}
 
@@ -480,12 +536,30 @@ namespace Test {
 			std::cout << "Closing" << std::endl;
 			glfwSetWindowShouldClose(window, true);
 		}
+
+		if (key == GLFW_KEY_END && action == GLFW_PRESS) {
+			this->state = GAME_WIN;
+		}
+
 		if (key >= 0 && key < 1024)
 		{
 			if (action == GLFW_PRESS)
-				Keys[key] = true;
+				this->Keys[key] = true;
 			else if (action == GLFW_RELEASE)
-				Keys[key] = false;
+			{
+				this->Keys[key] = false;
+				this->KeysProcessed[key] = false;
+			}
+		}
+
+		if (this->state == GAME_WIN)
+		{
+			if (this->Keys[GLFW_KEY_ENTER])
+			{
+				this->KeysProcessed[GLFW_KEY_ENTER] = true;
+				m_Chaos = false;
+				this->state = GAME_MENU;
+			}
 		}
 	}
 
@@ -499,6 +573,8 @@ namespace Test {
 			this->Levels[2].Load("res\\Levels\\level03.txt", this->m_Width, this->m_Height / 2);
 		else if (this->Level == 3)
 			this->Levels[3].Load("res\\Levels\\level04.txt", this->m_Width, this->m_Height / 2);
+
+		this->Lives = 3;
 	}
 
 	void TestGame::ResetPlayer()

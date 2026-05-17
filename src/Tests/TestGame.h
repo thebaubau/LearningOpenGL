@@ -43,7 +43,9 @@ namespace Test {
 		int m_Width, m_Height;
 		GameState state;
 		bool Keys[1024];
+		bool KeysProcessed[1024];
 		Renderer* m_Renderer = nullptr;
+		unsigned int Lives = 3;
 
 		std::vector<PowerUp> PowerUps;
 		void SpawnPowerUps(GameObject& block);
